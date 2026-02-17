@@ -1,0 +1,290 @@
+{
+  "meta": {
+    "worldId": "dan_resume_overworld",
+    "version": "0.1.0",
+    "title": "Dan - Resume Journey",
+    "resumePdfUrl": "/resume.pdf"
+  },
+  "assets": {
+    "mapImage": "/assets/map.png",
+    "referenceImages": {
+      "charlotte": "/assets/charlotte.png",
+      "georgia_tech": "/assets/georgia_tech.png",
+      "aquarium": "/assets/aquarium.png",
+      "parsons": "/assets/parsons.png",
+      "wisk": "/assets/wisk.png",
+      "fictiv": "/assets/fictiv.png"
+    },
+    "models": {}
+  },
+  "style": {
+    "materials": {
+      "finish": "matte",
+      "roundEdges": true,
+      "noPhotorealism": true,
+      "noHighFreqTextures": true
+    },
+    "pathStyle": {
+      "baseColor": "#C9A227",
+      "highlightColor": "#FFD36A",
+      "thickness": 1.0,
+      "elevation": 0.2,
+      "pulseOnIntro": true,
+      "traceDurationMs": 1800
+    },
+    "nodeMarkerStyle": {
+      "shape": "disc",
+      "defaultScale": 1.0,
+      "completedColor": "#2B2B2B",
+      "hoverGlow": true,
+      "labelOnProximity": true
+    },
+    "fogStyle": {
+      "introFogOpacity": 0.15,
+      "settleFogOpacity": 0.08,
+      "sfFogOpacity": 0.22
+    },
+    "regionPalettes": {
+      "charlotte": { "primary": "#0085CA", "secondary": "#000000", "accent": "#C0C0C0" },
+      "georgia_tech": { "primary": "#FFFFFF", "secondary": "#B3A369", "accent": "#C9A227" },
+      "aquarium": { "primary": "#002B5C", "secondary": "#0B4F6C", "accent": "#79C7FF" },
+      "parsons": { "primary": "#4B5320", "secondary": "#7A5C3E", "accent": "#2B2B2B" },
+      "wisk": { "primary": "#FFD100", "secondary": "#FFFFFF", "accent": "#000000" },
+      "fictiv": { "primary": "#58B99E", "secondary": "#2B2B2B", "accent": "#FFFFFF" },
+      "san_francisco": { "primary": "#AEB6BF", "secondary": "#2B2B2B", "accent": "#58B99E" }
+    }
+  },
+  "intro": {
+    "enabled": true,
+    "durationMs": 3000,
+    "startPreset": "introStart",
+    "endPreset": "introEnd",
+    "skipOnInput": true,
+    "settleToState": "idleMap",
+    "pathTrace": {
+      "enabled": true,
+      "startNodeId": "san_francisco",
+      "endNodeId": "charlotte",
+      "durationMs": 1800,
+      "glowColor": "#FFD36A",
+      "pulseNodes": true
+    },
+    "fogAnimation": {
+      "startOpacity": 0.15,
+      "endOpacity": 0.08,
+      "easing": "cubicInOut"
+    }
+  },
+  "cameraPresets": {
+    "introStart": { "position": [-40, 40, 60], "lookAt": [-25, 0, 0], "fov": 42, "damping": 0.08 },
+    "introEnd": { "position": [0, 65, 110], "lookAt": [0, 0, 0], "fov": 42, "damping": 0.08 },
+    "focusCharlotte": { "position": [35, 35, 45], "lookAt": [28, -5, 0], "fov": 42, "damping": 0.1 },
+    "checkpointDefault": { "position": [0, 30, 35], "lookAt": [0, 0, 0], "fov": 42, "damping": 0.12 },
+    "finalSF": { "position": [-30, 38, 52], "lookAt": [-28, 5, 0], "fov": 40, "damping": 0.08 }
+  },
+  "ui": {
+    "startButton": { "label": "Start Journey", "centered": true },
+    "tutorial": {
+      "title": "Quick Tutorial",
+      "lines": ["Use Arrow Keys to Navigate", "Press Enter to Open Checkpoint"],
+      "dismissOnAnyInput": true
+    },
+    "hud": {
+      "showProgress": true,
+      "showResumeLink": true,
+      "resumeLabel": "View Resume"
+    },
+    "checkpointPanel": {
+      "titleSuffix": "- Checkpoint",
+      "openKey": "Enter",
+      "closeKey": "Escape",
+      "slideFrom": "right",
+      "widthPercent": 55,
+      "blurBackground": true
+    }
+  },
+  "vehicles": {
+    "stages": [
+      { "id": "runner", "label": "Runner", "ref": "/world/vehicles/vehicles_spec.md" },
+      { "id": "wreck", "label": "Ramblin Wreck", "ref": "/world/vehicles/vehicles_spec.md" },
+      { "id": "parsons_truck", "label": "Parsons Industrial Vehicle", "ref": "/world/vehicles/vehicles_spec.md" },
+      { "id": "wisk_evtol", "label": "Wisk eVTOL", "ref": "/world/vehicles/vehicles_spec.md" },
+      { "id": "fictiv_mech", "label": "Fictiv Mech", "ref": "/world/vehicles/vehicles_spec.md" }
+    ],
+    "transformRules": {
+      "durationMs": 500,
+      "spinDegrees": 360,
+      "swapAtPercent": 0.6,
+      "motionBlur": true,
+      "dustPuff": true,
+      "cameraMicroZoomPercent": 3
+    },
+    "stageByNodeId": {
+      "charlotte": "runner",
+      "georgia_tech": "wreck",
+      "aquarium": "wreck",
+      "huntsville_parsons": "parsons_truck",
+      "palo_alto_wisk": "wisk_evtol",
+      "san_diego_fictiv": "fictiv_mech",
+      "san_francisco": "fictiv_mech"
+    }
+  },
+  "nodes": [
+    {
+      "id": "charlotte",
+      "name": "Charlotte, NC",
+      "type": "main",
+      "region": "charlotte",
+      "coords": { "x": 28, "y": -6 },
+      "radius": 3.5,
+      "marker": { "label": true, "icon": "dot" },
+      "checkpointContentRef": "/content/checkpoints/charlotte.md",
+      "unlock": { "type": "start" },
+      "completion": { "type": "open_checkpoint_once" }
+    },
+    {
+      "id": "georgia_tech",
+      "name": "Atlanta - Georgia Tech",
+      "type": "main",
+      "region": "georgia_tech",
+      "coords": { "x": 22, "y": -9 },
+      "radius": 3.5,
+      "marker": { "label": true, "icon": "dot" },
+      "checkpointContentRef": "/content/checkpoints/georgia_tech.md",
+      "unlock": { "type": "after_complete", "nodeId": "charlotte" },
+      "completion": { "type": "open_checkpoint_once" },
+      "landmarks": [{ "id": "tech_tower", "label": "Tech Tower" }]
+    },
+    {
+      "id": "aquarium",
+      "name": "Georgia Aquarium",
+      "type": "side",
+      "region": "aquarium",
+      "coords": { "x": 20.5, "y": -9.2 },
+      "radius": 3.0,
+      "marker": { "label": true, "icon": "dot" },
+      "checkpointContentRef": "/content/checkpoints/aquarium.md",
+      "unlock": { "type": "after_available", "nodeId": "georgia_tech" },
+      "completion": { "type": "open_checkpoint_once" }
+    },
+    {
+      "id": "huntsville_parsons",
+      "name": "Huntsville - Parsons",
+      "type": "main",
+      "region": "parsons",
+      "coords": { "x": 16, "y": -7 },
+      "radius": 3.5,
+      "marker": { "label": true, "icon": "dot" },
+      "checkpointContentRef": "/content/checkpoints/huntsville_parsons.md",
+      "unlock": { "type": "after_complete", "nodeId": "georgia_tech" },
+      "completion": { "type": "open_checkpoint_once" }
+    },
+    {
+      "id": "palo_alto_wisk",
+      "name": "Palo Alto - Wisk",
+      "type": "main",
+      "region": "wisk",
+      "coords": { "x": -24, "y": 7 },
+      "radius": 3.5,
+      "marker": { "label": true, "icon": "dot" },
+      "checkpointContentRef": "/content/checkpoints/wisk.md",
+      "unlock": { "type": "after_complete", "nodeId": "huntsville_parsons" },
+      "completion": { "type": "open_checkpoint_once" }
+    },
+    {
+      "id": "san_diego_fictiv",
+      "name": "San Diego - Fictiv",
+      "type": "main",
+      "region": "fictiv",
+      "coords": { "x": -28, "y": -8 },
+      "radius": 3.5,
+      "marker": { "label": true, "icon": "dot" },
+      "checkpointContentRef": "/content/checkpoints/fictiv_sd.md",
+      "unlock": { "type": "after_complete", "nodeId": "palo_alto_wisk" },
+      "completion": { "type": "open_checkpoint_once" }
+    },
+    {
+      "id": "san_francisco",
+      "name": "San Francisco",
+      "type": "final",
+      "region": "san_francisco",
+      "coords": { "x": -29, "y": 10 },
+      "radius": 4.0,
+      "marker": { "label": true, "icon": "dot" },
+      "checkpointContentRef": "/content/checkpoints/san_francisco.md",
+      "unlock": { "type": "after_complete", "nodeId": "san_diego_fictiv" },
+      "completion": { "type": "enter_node" },
+      "landmarks": [{ "id": "golden_gate", "label": "Golden Gate Bridge" }]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_charlotte_to_gt",
+      "from": "charlotte",
+      "to": "georgia_tech",
+      "type": "main",
+      "visibleWhen": { "type": "always" }
+    },
+    {
+      "id": "e_gt_to_huntsville",
+      "from": "georgia_tech",
+      "to": "huntsville_parsons",
+      "type": "main",
+      "visibleWhen": { "type": "after_available", "nodeId": "georgia_tech" }
+    },
+    {
+      "id": "e_gt_to_aquarium",
+      "from": "georgia_tech",
+      "to": "aquarium",
+      "type": "side",
+      "visibleWhen": { "type": "after_available", "nodeId": "georgia_tech" }
+    },
+    {
+      "id": "e_huntsville_to_wisk",
+      "from": "huntsville_parsons",
+      "to": "palo_alto_wisk",
+      "type": "main",
+      "visibleWhen": { "type": "after_complete", "nodeId": "huntsville_parsons" }
+    },
+    {
+      "id": "e_wisk_to_sd",
+      "from": "palo_alto_wisk",
+      "to": "san_diego_fictiv",
+      "type": "main",
+      "visibleWhen": { "type": "after_complete", "nodeId": "palo_alto_wisk" }
+    },
+    {
+      "id": "e_sd_to_sf",
+      "from": "san_diego_fictiv",
+      "to": "san_francisco",
+      "type": "main",
+      "visibleWhen": { "type": "after_complete", "nodeId": "san_diego_fictiv" }
+    }
+  ],
+  "progression": {
+    "startNodeId": "charlotte",
+    "finalNodeId": "san_francisco",
+    "mainSequence": [
+      "charlotte",
+      "georgia_tech",
+      "huntsville_parsons",
+      "palo_alto_wisk",
+      "san_diego_fictiv",
+      "san_francisco"
+    ],
+    "sideQuests": {
+      "georgia_tech": ["aquarium"]
+    },
+    "onCompleteNode": {
+      "setNodeCompletedColor": "#2B2B2B",
+      "enableNextEdgeGlow": true,
+      "triggerTransform": true
+    },
+    "onEnterFinal": {
+      "lockMovement": true,
+      "increaseFog": true,
+      "showResumeCTA": true,
+      "showFutureLevelsText": true
+    }
+  }
+}

@@ -1,0 +1,110 @@
+:root {
+  --bg: #101820;
+  --panel: rgba(255, 255, 255, 0.9);
+  --text: #111111;
+  --hud: rgba(16, 24, 32, 0.88);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #f5f7fa;
+  background: radial-gradient(circle at top, #1d2c3d 0%, var(--bg) 60%);
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.hud {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: var(--hud);
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.hud a {
+  color: #ffd36a;
+}
+
+.world-canvas {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.scene-block,
+.camera-debug,
+.postfx-debug {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 20;
+}
+
+.overlay.center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.overlay.tutorial,
+.overlay.final-state {
+  right: 16px;
+  top: 70px;
+  max-width: 360px;
+  padding: 16px;
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 14px;
+}
+
+.checkpoint-panel {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  bottom: 16px;
+  width: min(600px, 55vw);
+  overflow: auto;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.checkpoint-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-panel {
+  padding: 24px;
+}
+
+@media (max-width: 900px) {
+  .world-canvas {
+    grid-template-columns: 1fr;
+  }
+
+  .checkpoint-panel {
+    width: calc(100vw - 32px);
+  }
+}
