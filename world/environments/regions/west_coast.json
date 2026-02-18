@@ -1,0 +1,35 @@
+{
+  "id": "west_coast",
+  "buildings": [
+    {
+      "id": "sf_hillside_1",
+      "moduleId": "sf_hillside",
+      "position": { "x": -63.8, "y": 7.2, "elevation": 0 },
+      "rotation": 18
+    },
+    {
+      "id": "sf_hillside_2",
+      "moduleId": "sf_tower",
+      "position": { "x": -60, "y": 6, "elevation": 0 },
+      "rotation": -12
+    },
+    {
+      "id": "palo_alto_lab",
+      "moduleId": "lab_block",
+      "position": { "x": -56.4, "y": 2, "elevation": 0 },
+      "rotation": 10
+    },
+    {
+      "id": "coastal_warehouse",
+      "moduleId": "warehouse_block",
+      "position": { "x": -53.6, "y": -9.6, "elevation": 0 },
+      "rotation": 8
+    },
+    {
+      "id": "sd_blocks_1",
+      "moduleId": "sd_midrise",
+      "position": { "x": -52.8, "y": -13.6, "elevation": 0 },
+      "rotation": -14
+    }
+  ]
+}

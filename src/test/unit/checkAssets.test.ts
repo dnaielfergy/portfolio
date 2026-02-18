@@ -105,6 +105,20 @@ const baseConfig: WorldConfig = {
     },
     stageByNodeId: { charlotte: "runner" },
   },
+  environment: {
+    collision: {
+      enabled: true,
+      playerRadius: 0.9,
+      maxSlideIterations: 4,
+    },
+    buildings: [
+      {
+        id: "test_building",
+        position: { x: 4, y: 4 },
+        size: { width: 3, depth: 3, height: 2 },
+      },
+    ],
+  },
   nodes: [
     {
       id: "charlotte",

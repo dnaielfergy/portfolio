@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { CameraRig } from "../camera/CameraRig";
 import { PostFXManager } from "../postfx/PostFXManager";
 import { CharacterRig } from "./CharacterRig";
+import { EnvironmentLayer } from "./EnvironmentLayer";
 import { MapLayer } from "./MapLayer";
 import { NodeMarkers } from "./NodeMarkers";
 import { PathLayer } from "./PathLayer";
@@ -17,6 +18,7 @@ function SceneContent(): React.JSX.Element {
       <hemisphereLight intensity={0.3} groundColor="#0f151d" color="#d5dde7" />
 
       <MapLayer />
+      <EnvironmentLayer />
       <PathLayer />
       <NodeMarkers />
       <VehicleRig />

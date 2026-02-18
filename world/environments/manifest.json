@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "collision": {
+    "enabled": true,
+    "playerRadius": 0.85,
+    "maxSlideIterations": 4
+  },
+  "kitRefs": [
+    "/world/environments/kits/us_city_kit.json"
+  ],
+  "regionRefs": [
+    "/world/environments/regions/west_coast.json",
+    "/world/environments/regions/southeast.json"
+  ]
+}

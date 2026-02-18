@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "collision": {
+    "enabled": true,
+    "playerRadius": 0.2,
+    "maxSlideIterations": 4
+  },
+  "kitRefs": [
+    "/world/environments/kits/us_city_kit.json"
+  ],
+  "regionRefs": [
+    "/world/environments/regions/atlanta_tuning.json"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portfolio.local/environment_region.schema.json",
+  "title": "EnvironmentRegion",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "buildings"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "buildings": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/environmentPlacement" }
+    },
+    "props": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/environmentPlacement" }
+    }
+  },
+  "$defs": {
+    "environmentPlacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "position"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "moduleId": { "type": "string", "minLength": 1 },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "elevation": { "type": "number", "minimum": 0 }
+          }
+        },
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "depth", "height"],
+          "properties": {
+            "width": { "type": "number", "exclusiveMinimum": 0 },
+            "depth": { "type": "number", "exclusiveMinimum": 0 },
+            "height": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        "rotation": { "type": "number" },
+        "styleKey": { "type": "string", "minLength": 1 },
+        "collider": { "type": "boolean" }
+      },
+      "anyOf": [
+        { "required": ["moduleId"] },
+        { "required": ["size"] }
+      ]
+    }
+  }
+}

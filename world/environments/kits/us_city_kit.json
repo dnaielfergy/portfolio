@@ -1,0 +1,65 @@
+{
+  "id": "us_city_kit",
+  "modules": [
+    {
+      "id": "sf_hillside",
+      "size": { "width": 3.8, "depth": 2.8, "height": 3.4 },
+      "styleKey": "san_francisco",
+      "colliderByDefault": true
+    },
+    {
+      "id": "sf_tower",
+      "size": { "width": 3.2, "depth": 2.6, "height": 4.1 },
+      "styleKey": "san_francisco",
+      "colliderByDefault": true
+    },
+    {
+      "id": "lab_block",
+      "size": { "width": 4.2, "depth": 3.4, "height": 4.6 },
+      "styleKey": "wisk",
+      "colliderByDefault": true
+    },
+    {
+      "id": "warehouse_block",
+      "size": { "width": 4.8, "depth": 3.2, "height": 3.2 },
+      "styleKey": "fictiv",
+      "colliderByDefault": true
+    },
+    {
+      "id": "sd_midrise",
+      "size": { "width": 3.6, "depth": 3.6, "height": 3.8 },
+      "styleKey": "fictiv",
+      "colliderByDefault": true
+    },
+    {
+      "id": "hangar_block",
+      "size": { "width": 5.2, "depth": 3.8, "height": 3.4 },
+      "styleKey": "parsons",
+      "colliderByDefault": true
+    },
+    {
+      "id": "atl_tower",
+      "size": { "width": 2.8, "depth": 2.8, "height": 5.8 },
+      "styleKey": "georgia_tech",
+      "colliderByDefault": true
+    },
+    {
+      "id": "charlotte_midrise",
+      "size": { "width": 3.2, "depth": 3.2, "height": 4.4 },
+      "styleKey": "charlotte",
+      "colliderByDefault": true
+    },
+    {
+      "id": "small_monument",
+      "size": { "width": 1.1, "depth": 1.1, "height": 1.8 },
+      "styleKey": "charlotte",
+      "colliderByDefault": false
+    },
+    {
+      "id": "small_pavilion",
+      "size": { "width": 1.8, "depth": 1.8, "height": 1.3 },
+      "styleKey": "georgia_tech",
+      "colliderByDefault": false
+    }
+  ]
+}

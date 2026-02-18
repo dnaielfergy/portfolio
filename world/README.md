@@ -12,6 +12,7 @@ This folder is the canonical implementation contract for the portfolio world.
 6. Implement intro cinematic from `world/intro/intro_spec.md`.
 7. Validate all required assets using `world/assets/assets_manifest.md`.
 8. Run end-to-end acceptance checks in `world/qa/acceptance_test_plan.md`.
+9. Resolve environment manifests (`world/environments/manifest.json`) into runtime buildings/colliders.
 
 ## Non-Negotiables
 

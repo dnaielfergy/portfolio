@@ -2,7 +2,7 @@
   "meta": {
     "imageWidth": 1376,
     "imageHeight": 768,
-    "mapPlaneHeight": 120,
+    "mapPlaneHeight": 240,
     "sceneScale": 2.5
   },
   "nodes": {
@@ -11,7 +11,7 @@
     "san_diego_fictiv": { "px": 272, "py": 480 },
     "huntsville_parsons": { "px": 871, "py": 461 },
     "georgia_tech": { "px": 1000, "py": 490 },
-    "aquarium": { "px": 968, "py": 520 },
+    "aquarium": { "px": 1032, "py": 500 },
     "charlotte": { "px": 1070, "py": 430 }
   },
   "edges": {

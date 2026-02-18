@@ -1,0 +1,35 @@
+{
+  "id": "southeast",
+  "buildings": [
+    {
+      "id": "huntsville_hangar",
+      "moduleId": "hangar_block",
+      "position": { "x": 23.6, "y": -9.8, "elevation": 0 },
+      "rotation": -10
+    },
+    {
+      "id": "atl_tower",
+      "moduleId": "atl_tower",
+      "position": { "x": 39.8, "y": -13.4, "elevation": 0 },
+      "rotation": 5
+    },
+    {
+      "id": "charlotte_midrise",
+      "moduleId": "charlotte_midrise",
+      "position": { "x": 48.8, "y": -5.4, "elevation": 0 },
+      "rotation": -6
+    }
+  ],
+  "props": [
+    {
+      "id": "charlotte_monument",
+      "moduleId": "small_monument",
+      "position": { "x": 46.4, "y": -4.2, "elevation": 0 }
+    },
+    {
+      "id": "atl_pavilion",
+      "moduleId": "small_pavilion",
+      "position": { "x": 37.2, "y": -13.8, "elevation": 0 }
+    }
+  ]
+}

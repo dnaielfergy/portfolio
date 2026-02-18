@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 
+import { SCENE_SCALE } from "../data/loadWorldConfig";
 import { useWorldStoreContext } from "../state/worldStore";
 import type { RuntimeWorldStore, WorldState } from "../types/world";
 
@@ -12,16 +13,23 @@ interface PostFxProfile {
   noise: number;
 }
 
+const BASELINE_SCENE_SCALE = 1;
+const FOG_RANGE_SCALE = SCENE_SCALE / BASELINE_SCENE_SCALE;
+
 function buildProfile(
   worldState: WorldState,
   transformProgress: number,
   qualityTier: RuntimeWorldStore["qualityTier"],
   fog: { introFogOpacity: number; settleFogOpacity: number; sfFogOpacity: number },
 ): PostFxProfile {
-  const fogLerp = (opacity: number): { near: number; far: number } => ({
-    near: 22 + opacity * 120,
-    far: 210 - opacity * 85,
-  });
+  const fogLerp = (opacity: number): { near: number; far: number } => {
+    const near = 22 + opacity * 120;
+    const far = 210 - opacity * 85;
+    return {
+      near: near * FOG_RANGE_SCALE,
+      far: far * FOG_RANGE_SCALE,
+    };
+  };
 
   if (worldState === "intro") {
     const fogRange = fogLerp(fog.introFogOpacity);

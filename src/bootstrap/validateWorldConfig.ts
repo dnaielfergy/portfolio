@@ -2,7 +2,7 @@ import Ajv2020 from "ajv/dist/2020";
 import type { ErrorObject } from "ajv";
 
 import worldConfigSchema from "../../world/schema/world_config.schema.json";
-import type { NodeId, WorldConfig } from "../types/world";
+import type { EnvironmentObject, NodeId, WorldConfig } from "../types/world";
 
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 const validateSchema = ajv.compile(worldConfigSchema);
@@ -27,6 +27,54 @@ function formatAjvErrors(errors: ErrorObject[] | null | undefined): string {
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) {
     fail(message);
+  }
+}
+
+function assertEnvironmentObject(id: string, object: EnvironmentObject): void {
+  assert(object.size.width > 0, `Environment object '${id}' must have width > 0`);
+  assert(object.size.depth > 0, `Environment object '${id}' must have depth > 0`);
+  assert(object.size.height > 0, `Environment object '${id}' must have height > 0`);
+}
+
+function validateEnvironment(config: WorldConfig): void {
+  const environment = config.environment as
+    | (WorldConfig["environment"] & { manifestRef?: string })
+    | { manifestRef: string; buildings?: never; props?: never; collision?: never };
+  if (!("buildings" in environment) || !Array.isArray(environment.buildings)) {
+    return;
+  }
+  const props = Array.isArray(environment.props) ? environment.props : [];
+
+  const ids = new Set<string>();
+
+  for (const building of environment.buildings) {
+    assert(!ids.has(building.id), `Duplicate environment object id '${building.id}'`);
+    ids.add(building.id);
+    assertEnvironmentObject(building.id, building);
+  }
+
+  for (const prop of props) {
+    assert(!ids.has(prop.id), `Duplicate environment object id '${prop.id}'`);
+    ids.add(prop.id);
+    assertEnvironmentObject(prop.id, prop);
+  }
+
+  const nodeXs = config.nodes.map((node) => node.coords.x);
+  const nodeYs = config.nodes.map((node) => node.coords.y);
+  const minX = Math.min(...nodeXs) - 12;
+  const maxX = Math.max(...nodeXs) + 12;
+  const minY = Math.min(...nodeYs) - 12;
+  const maxY = Math.max(...nodeYs) + 12;
+
+  for (const object of [...environment.buildings, ...props]) {
+    assert(
+      object.position.x >= minX && object.position.x <= maxX,
+      `Environment object '${object.id}' has x '${object.position.x}' outside map sanity bounds [${minX}, ${maxX}]`,
+    );
+    assert(
+      object.position.y >= minY && object.position.y <= maxY,
+      `Environment object '${object.id}' has y '${object.position.y}' outside map sanity bounds [${minY}, ${maxY}]`,
+    );
   }
 }
 
@@ -74,6 +122,8 @@ function validateCrossReferences(config: WorldConfig): void {
     assert(nodeIds.has(nodeId), `stageByNodeId references missing node '${nodeId}'`);
     assert(validStageIds.has(stageId), `stageByNodeId references missing stage '${stageId}'`);
   }
+
+  validateEnvironment(config);
 }
 
 export function validateWorldConfig(config: unknown): asserts config is WorldConfig {

@@ -12,6 +12,7 @@
     "cameraPresets",
     "ui",
     "vehicles",
+    "environment",
     "nodes",
     "edges",
     "progression"
@@ -236,7 +237,16 @@
             "properties": {
               "id": { "type": "string", "minLength": 1 },
               "label": { "type": "string", "minLength": 1 },
-              "ref": { "type": "string", "minLength": 1 }
+              "ref": { "type": "string", "minLength": 1 },
+              "collider": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["shape", "radius"],
+                "properties": {
+                  "shape": { "const": "circle" },
+                  "radius": { "type": "number", "exclusiveMinimum": 0 }
+                }
+              }
             }
           }
         },
@@ -259,6 +269,36 @@
           "additionalProperties": { "type": "string", "minLength": 1 }
         }
       }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "manifestRef": { "type": "string", "minLength": 1 },
+        "buildings": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/environmentBuildingObject" }
+        },
+        "props": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/environmentObject" }
+        },
+        "collision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "playerRadius", "maxSlideIterations"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "playerRadius": { "type": "number", "exclusiveMinimum": 0 },
+            "maxSlideIterations": { "type": "integer", "minimum": 1, "maximum": 10 }
+          }
+        }
+      },
+      "anyOf": [
+        { "required": ["manifestRef"] },
+        { "required": ["buildings", "collision"] }
+      ]
     },
     "nodes": {
       "type": "array",
@@ -493,6 +533,67 @@
         },
         "fov": { "type": "number", "exclusiveMinimum": 0 },
         "damping": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+      }
+    },
+    "environmentObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "position", "size"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "elevation": { "type": "number", "minimum": 0 }
+          }
+        },
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "depth", "height"],
+          "properties": {
+            "width": { "type": "number", "exclusiveMinimum": 0 },
+            "depth": { "type": "number", "exclusiveMinimum": 0 },
+            "height": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        "rotation": { "type": "number" },
+        "styleKey": { "type": "string", "minLength": 1 }
+      }
+    },
+    "environmentBuildingObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "position", "size"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "elevation": { "type": "number", "minimum": 0 }
+          }
+        },
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "depth", "height"],
+          "properties": {
+            "width": { "type": "number", "exclusiveMinimum": 0 },
+            "depth": { "type": "number", "exclusiveMinimum": 0 },
+            "height": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        "rotation": { "type": "number" },
+        "styleKey": { "type": "string", "minLength": 1 },
+        "collider": { "type": "boolean" }
       }
     }
   }

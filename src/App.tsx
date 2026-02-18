@@ -6,6 +6,8 @@ import { initWorld } from "./bootstrap/initWorld";
 import { resolveEnterAction } from "./input/actionRouter";
 import { useKeyboardController } from "./input/keyboardController";
 import { findNearbyNode } from "./input/proximityDetector";
+import { buildCollisionIndex, resolveMovementWithCollisions } from "./physics/collision";
+import { resolveActivePlayerRadius } from "./physics/vehicleCollider";
 import { resolveQualityTier } from "./postfx/qualityTier";
 import { WorldCanvas } from "./scene/WorldCanvas";
 import { useWorldStore, WorldStoreProvider } from "./state/worldStore";
@@ -26,6 +28,13 @@ type MovementKey =
   | "KeyS"
   | "KeyD";
 
+const PLAYER_BASE_SPEED = 12;
+const PLAYER_MAX_SPEED = 25;
+const PLAYER_BOOST_DELAY_SECONDS = 0.35;
+const PLAYER_BOOST_ACCEL = 40;
+const PLAYER_STOP_DECEL = 220;
+const VELOCITY_EPSILON = 0.001;
+
 function RuntimeApp({ world }: InitWorldResult): React.JSX.Element {
   const store = useWorldStore(world);
   const { state, dispatch } = store;
@@ -35,7 +44,20 @@ function RuntimeApp({ world }: InitWorldResult): React.JSX.Element {
     () => createVehicleTransformService(world.config.vehicles.transformRules),
     [world.config.vehicles.transformRules],
   );
+  const collisionIndex = useMemo(() => buildCollisionIndex(world.config.environment), [world.config.environment]);
+  const activePlayerRadius = useMemo(
+    () =>
+      resolveActivePlayerRadius({
+        worldConfig: world.config,
+        activeVehicleStageId: state.activeVehicleStageId,
+        transform: state.transform,
+      }),
+    [state.activeVehicleStageId, state.transform.fromStage, state.transform.status, state.transform.toStage, world.config],
+  );
   const previousStageRef = useRef(state.activeVehicleStageId);
+  const travelSpeedRef = useRef(0);
+  const sustainedInputSecondsRef = useRef(0);
+  const lastMoveDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useKeyboardController({
     worldState: state.worldState,
@@ -140,34 +162,103 @@ function RuntimeApp({ world }: InitWorldResult): React.JSX.Element {
   }, [state.activeVehicleStageId]);
 
   useEffect(() => {
+    if (state.worldState === "exploring") {
+      return;
+    }
+
+    travelSpeedRef.current = 0;
+    sustainedInputSecondsRef.current = 0;
+    lastMoveDirectionRef.current = { x: 0, y: 0 };
+  }, [state.worldState]);
+
+  useEffect(() => {
     if (state.worldState !== "exploring" || state.player.movementLocked) {
       return;
     }
 
     let raf = 0;
-    const speed = 12;
     let lastTime = performance.now();
 
     const tick = (now: number): void => {
       const deltaSeconds = (now - lastTime) / 1000;
       lastTime = now;
 
-      let vx = 0;
-      let vy = 0;
+      let inputX = 0;
+      let inputY = 0;
 
-      if (movementKeysRef.current.has("ArrowLeft") || movementKeysRef.current.has("KeyA")) vx -= speed;
-      if (movementKeysRef.current.has("ArrowRight") || movementKeysRef.current.has("KeyD")) vx += speed;
-      if (movementKeysRef.current.has("ArrowUp") || movementKeysRef.current.has("KeyW")) vy += speed;
-      if (movementKeysRef.current.has("ArrowDown") || movementKeysRef.current.has("KeyS")) vy -= speed;
+      if (movementKeysRef.current.has("ArrowLeft") || movementKeysRef.current.has("KeyA")) inputX -= 1;
+      if (movementKeysRef.current.has("ArrowRight") || movementKeysRef.current.has("KeyD")) inputX += 1;
+      if (movementKeysRef.current.has("ArrowUp") || movementKeysRef.current.has("KeyW")) inputY += 1;
+      if (movementKeysRef.current.has("ArrowDown") || movementKeysRef.current.has("KeyS")) inputY -= 1;
 
-      const hasMovement = vx !== 0 || vy !== 0;
+      const inputLength = Math.hypot(inputX, inputY);
+      const hasInput = inputLength > 0;
+      const normalizedInput = hasInput
+        ? {
+            x: inputX / inputLength,
+            y: inputY / inputLength,
+          }
+        : { x: 0, y: 0 };
+      const previousVelocity = state.player.velocity;
+      const previousSpeed = Math.hypot(previousVelocity.x, previousVelocity.y);
+      const activeDirection = hasInput
+        ? normalizedInput
+        : previousSpeed > VELOCITY_EPSILON
+          ? {
+              x: previousVelocity.x / previousSpeed,
+              y: previousVelocity.y / previousSpeed,
+            }
+          : lastMoveDirectionRef.current;
+      let nextSpeed = travelSpeedRef.current;
+
+      if (hasInput) {
+        sustainedInputSecondsRef.current += deltaSeconds;
+        const isBoosting = sustainedInputSecondsRef.current >= PLAYER_BOOST_DELAY_SECONDS;
+        if (nextSpeed < PLAYER_BASE_SPEED) {
+          nextSpeed = PLAYER_BASE_SPEED;
+        } else if (isBoosting) {
+          nextSpeed = Math.min(PLAYER_MAX_SPEED, nextSpeed + PLAYER_BOOST_ACCEL * deltaSeconds);
+        } else {
+          nextSpeed = Math.min(nextSpeed, PLAYER_BASE_SPEED);
+        }
+        lastMoveDirectionRef.current = normalizedInput;
+      } else {
+        sustainedInputSecondsRef.current = 0;
+        nextSpeed = Math.max(0, nextSpeed - PLAYER_STOP_DECEL * deltaSeconds);
+      }
+
+      const nextVelocity = {
+        x: activeDirection.x * nextSpeed,
+        y: activeDirection.y * nextSpeed,
+      };
+      const hasMovement = Math.hypot(nextVelocity.x, nextVelocity.y) > VELOCITY_EPSILON;
+
       if (hasMovement) {
-        const nextPosition = {
-          x: state.player.position.x + vx * deltaSeconds,
-          y: state.player.position.y + vy * deltaSeconds,
+        const resolved = resolveMovementWithCollisions({
+          index: collisionIndex,
+          position: state.player.position,
+          velocity: nextVelocity,
+          deltaSeconds,
+          collision: {
+            ...world.config.environment.collision,
+            playerRadius: activePlayerRadius,
+          },
+        });
+        const nextPosition = resolved.position;
+        const resolvedVelocityRaw =
+          deltaSeconds > 0
+            ? {
+                x: (nextPosition.x - state.player.position.x) / deltaSeconds,
+                y: (nextPosition.y - state.player.position.y) / deltaSeconds,
+              }
+            : { x: 0, y: 0 };
+        const velocity = {
+          x: Math.abs(resolvedVelocityRaw.x) < VELOCITY_EPSILON ? 0 : resolvedVelocityRaw.x,
+          y: Math.abs(resolvedVelocityRaw.y) < VELOCITY_EPSILON ? 0 : resolvedVelocityRaw.y,
         };
+        travelSpeedRef.current = Math.hypot(velocity.x, velocity.y);
 
-        dispatch({ type: "PLAYER_MOVED", position: nextPosition, velocity: { x: vx, y: vy } });
+        dispatch({ type: "PLAYER_MOVED", position: nextPosition, velocity });
 
         const nearbyNode = findNearbyNode(nextPosition, world.config.nodes);
         if (nearbyNode && nearbyNode.id !== state.activeNodeId) {
@@ -181,6 +272,7 @@ function RuntimeApp({ world }: InitWorldResult): React.JSX.Element {
           }
         }
       } else if (state.player.velocity.x !== 0 || state.player.velocity.y !== 0) {
+        travelSpeedRef.current = 0;
         dispatch({
           type: "PLAYER_MOVED",
           position: state.player.position,
@@ -193,7 +285,7 @@ function RuntimeApp({ world }: InitWorldResult): React.JSX.Element {
 
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [dispatch, state.activeNodeId, state.player, state.progression.availableNodeIds, state.worldState, world.config]);
+  }, [activePlayerRadius, collisionIndex, dispatch, state.activeNodeId, state.player, state.progression.availableNodeIds, state.worldState, world.config]);
 
   return (
     <WorldStoreProvider store={store}>

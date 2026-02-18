@@ -7,7 +7,7 @@ const typedWorldConfig = worldConfig as unknown as WorldConfig;
 
 const IMAGE_WIDTH = 1376;
 const IMAGE_HEIGHT = 768;
-const MAP_PLANE_HEIGHT = 120;
+const MAP_PLANE_HEIGHT = 240;
 const SCENE_SCALE = 2.5;
 
 function pixelToWorld(px: number, py: number): { x: number; y: number } {
@@ -28,7 +28,7 @@ describe("world anchor calibration", () => {
       san_diego_fictiv: { px: 272, py: 480 },
       huntsville_parsons: { px: 871, py: 461 },
       georgia_tech: { px: 1000, py: 490 },
-      aquarium: { px: 968, py: 520 },
+      aquarium: { px: 1032, py: 500 },
       charlotte: { px: 1070, py: 430 },
     };
 
@@ -47,7 +47,7 @@ describe("world anchor calibration", () => {
     }
   });
 
-  it("keeps aquarium southwest of Atlanta in calibrated layout", () => {
+  it("keeps aquarium east of Atlanta in calibrated layout", () => {
     const nodesById = Object.fromEntries(typedWorldConfig.nodes.map((node) => [node.id, node]));
     const aquarium = nodesById.aquarium;
     const atlanta = nodesById.georgia_tech;
@@ -58,7 +58,6 @@ describe("world anchor calibration", () => {
       return;
     }
 
-    expect(aquarium.coords.x).toBeLessThan(atlanta.coords.x);
-    expect(aquarium.coords.y).toBeLessThan(atlanta.coords.y);
+    expect(aquarium.coords.x).toBeGreaterThan(atlanta.coords.x);
   });
 });

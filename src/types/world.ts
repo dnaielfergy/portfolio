@@ -135,6 +135,10 @@ export interface VehicleStage {
   id: string;
   label: string;
   ref: string;
+  collider?: {
+    shape: "circle";
+    radius: number;
+  };
 }
 
 export interface VehicleConfig {
@@ -148,6 +152,89 @@ export interface VehicleConfig {
     cameraMicroZoomPercent: number;
   };
   stageByNodeId: Record<NodeId, string>;
+}
+
+export interface EnvironmentObject {
+  id: string;
+  position: {
+    x: number;
+    y: number;
+    elevation?: number;
+  };
+  size: {
+    width: number;
+    depth: number;
+    height: number;
+  };
+  rotation?: number;
+  styleKey?: string;
+}
+
+export interface EnvironmentCollisionConfig {
+  enabled: boolean;
+  playerRadius: number;
+  maxSlideIterations: number;
+}
+
+export interface EnvironmentConfig {
+  buildings: Array<EnvironmentObject & { collider?: boolean }>;
+  props?: EnvironmentObject[];
+  collision: EnvironmentCollisionConfig;
+}
+
+export interface EnvironmentManifestRef {
+  manifestRef: string;
+}
+
+export type EnvironmentConfigSource = EnvironmentConfig | EnvironmentManifestRef;
+
+export interface EnvironmentKitModule {
+  id: string;
+  size: {
+    width: number;
+    depth: number;
+    height: number;
+  };
+  rotation?: number;
+  styleKey?: string;
+  colliderByDefault?: boolean;
+  modelRef?: string;
+}
+
+export interface EnvironmentKit {
+  id: string;
+  modules: EnvironmentKitModule[];
+}
+
+export interface EnvironmentPlacement {
+  id: string;
+  moduleId?: string;
+  position: {
+    x: number;
+    y: number;
+    elevation?: number;
+  };
+  size?: {
+    width: number;
+    depth: number;
+    height: number;
+  };
+  rotation?: number;
+  styleKey?: string;
+  collider?: boolean;
+}
+
+export interface EnvironmentRegion {
+  id: string;
+  buildings: EnvironmentPlacement[];
+  props?: EnvironmentPlacement[];
+}
+
+export interface EnvironmentManifest {
+  version: string;
+  collision: EnvironmentCollisionConfig;
+  kitRefs: string[];
+  regionRefs: string[];
 }
 
 export type UnlockRule =
@@ -223,9 +310,14 @@ export interface WorldConfig {
   cameraPresets: CameraPresetMap;
   ui: UIConfig;
   vehicles: VehicleConfig;
+  environment: EnvironmentConfig;
   nodes: WorldNode[];
   edges: WorldEdge[];
   progression: ProgressionConfig;
+}
+
+export interface WorldConfigSource extends Omit<WorldConfig, "environment"> {
+  environment: EnvironmentConfigSource;
 }
 
 export interface PlayerState {

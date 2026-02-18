@@ -13,6 +13,7 @@ This document defines the authoritative data model for the interactive portfolio
 - `cameraPresets` (required)
 - `ui` (required)
 - `vehicles` (required)
+- `environment` (required)
 - `nodes` (required)
 - `edges` (required)
 - `progression` (required)
@@ -173,8 +174,53 @@ Each preset contains:
 - `id: string`
 - `label: string`
 - `ref: string`
+- `collider?: { shape: "circle", radius: number }`
 
-### 4.8 `nodes`
+### 4.8 `environment`
+
+- `manifestRef?: string` (recommended entrypoint)
+- `collision.enabled: boolean`
+- `collision.playerRadius: number`
+- `collision.maxSlideIterations: number`
+- `buildings: Array<EnvironmentBuilding>` (inline mode)
+- `props?: Array<EnvironmentObject>` (inline mode)
+
+Split-file mode:
+
+- `world/environments/manifest.json` (`environment_manifest.schema.json`)
+- `world/environments/kits/*.json` (`environment_kit.schema.json`)
+- `world/environments/regions/*.json` (`environment_region.schema.json`)
+
+When `manifestRef` is set, runtime resolves kits + region placement data into the same effective
+`buildings/props/collision` structure used by rendering and collision systems.
+
+`EnvironmentBuilding` fields:
+
+- `id: string`
+- `position: {x:number, y:number, elevation?:number}`
+- `size: {width:number, depth:number, height:number}`
+- `rotation?: number` (degrees)
+- `styleKey?: string`
+- `collider?: boolean` (default `true`)
+
+`EnvironmentObject` fields:
+
+- `id: string`
+- `position: {x:number, y:number, elevation?:number}`
+- `size: {width:number, depth:number, height:number}`
+- `rotation?: number` (degrees)
+- `styleKey?: string`
+
+2.5D collision semantics:
+
+- Collisions are solved on the ground plane (`x/y` world space).
+- Building blockers are footprint-based (width/depth with optional rotation).
+- Character/vehicle visual elevation does not change collision result.
+- If `vehicles.stages[*].collider.radius` is present for the active stage, it overrides
+  `environment.collision.playerRadius`.
+- During transforms, the effective player radius uses `max(fromStageRadius, toStageRadius)`.
+
+### 4.9 `nodes`
 
 Each node contains:
 
@@ -202,7 +248,7 @@ Each node contains:
 - `{ "type": "open_checkpoint_once" }`
 - `{ "type": "enter_node" }`
 
-### 4.9 `edges`
+### 4.10 `edges`
 
 Each edge contains:
 
@@ -221,7 +267,7 @@ Each edge contains:
 - `{ "type": "after_available", "nodeId": string }`
 - `{ "type": "after_complete", "nodeId": string }`
 
-### 4.10 `progression`
+### 4.11 `progression`
 
 - `startNodeId: string`
 - `finalNodeId: string`
@@ -245,3 +291,7 @@ Each edge contains:
 - Every node has a `checkpointContentRef` under `/content/checkpoints/`.
 - `intro.startPreset` and `intro.endPreset` are valid `cameraPresets` keys.
 - `vehicles.stageByNodeId` values reference valid `vehicles.stages[*].id`.
+- Environment object IDs are unique per collection (`buildings`, `props`).
+- Environment footprint sizes are strictly positive.
+- Environment positions stay within authored world bounds for reachable gameplay.
+- In manifest mode, all `kitRefs` and `regionRefs` resolve to schema-valid files.

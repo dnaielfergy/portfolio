@@ -3,7 +3,7 @@ import { useTexture } from "@react-three/drei";
 
 import { useWorldStoreContext } from "../state/worldStore";
 
-const BASE_MAP_HEIGHT = 120;
+const BASE_MAP_HEIGHT = 240;
 
 export function MapLayer(): React.JSX.Element {
   const {
