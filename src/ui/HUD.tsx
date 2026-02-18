@@ -1,6 +1,6 @@
 import { useWorldStoreContext } from "../state/worldStore";
 
-export function HUD(): JSX.Element {
+export function HUD(): React.JSX.Element {
   const {
     world: { config },
     state,

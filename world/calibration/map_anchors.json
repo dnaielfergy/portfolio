@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "imageWidth": 1376,
+    "imageHeight": 768,
+    "mapPlaneHeight": 120,
+    "sceneScale": 2.5
+  },
+  "nodes": {
+    "san_francisco": { "px": 190, "py": 334 },
+    "palo_alto_wisk": { "px": 225, "py": 372 },
+    "san_diego_fictiv": { "px": 272, "py": 480 },
+    "huntsville_parsons": { "px": 871, "py": 461 },
+    "georgia_tech": { "px": 1000, "py": 490 },
+    "aquarium": { "px": 968, "py": 520 },
+    "charlotte": { "px": 1070, "py": 430 }
+  },
+  "edges": {
+    "e_gt_to_huntsville": [{ "px": 948, "py": 479 }],
+    "e_huntsville_to_wisk": [
+      { "px": 760, "py": 460 },
+      { "px": 640, "py": 513 },
+      { "px": 420, "py": 515 },
+      { "px": 310, "py": 495 }
+    ],
+    "e_wisk_to_sd": [
+      { "px": 212, "py": 420 },
+      { "px": 215, "py": 465 },
+      { "px": 245, "py": 490 }
+    ],
+    "e_sd_to_sf": [
+      { "px": 246, "py": 454 },
+      { "px": 220, "py": 416 }
+    ]
+  }
+}

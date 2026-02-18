@@ -2,13 +2,26 @@
 
 Required local assets:
 
-- `/assets/map.png`
+- `/assets/map_without_line.png`
 - `/assets/charlotte.png`
 - `/assets/georgia_tech.png`
 - `/assets/aquarium.png`
 - `/assets/parsons.png`
 - `/assets/wisk.png`
 - `/assets/fictiv.png`
+
+Reference-only style assets:
+
+- `/assets/map_without_labels.png` (style target, not runtime required)
+
+Legacy fallback assets:
+
+- `/assets/map.png` (temporary comparison fallback)
+
+Integrity guardrail:
+
+- `map_without_line.png` must not be byte-identical to `map.png`.
+- Set `VITE_FAIL_ON_DUPLICATE_BASE_MAP=true` to fail fast on duplicate base map content.
 
 ## Usage Constraints
 

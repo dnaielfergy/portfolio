@@ -17,6 +17,13 @@ export async function initWorld(): Promise<InitWorldResult> {
       `Missing required world assets: ${assets.missing.join(", ")}. See world/assets/assets_manifest.md`,
     );
   }
+  if (assets.identityIssues.length > 0) {
+    const message = `World asset identity check failed: ${assets.identityIssues.join("; ")}`;
+    if (import.meta.env.VITE_FAIL_ON_DUPLICATE_BASE_MAP === "true") {
+      throw new Error(message);
+    }
+    console.warn(message);
+  }
 
   return {
     world: normalizeWorldConfig(config),

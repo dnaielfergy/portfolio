@@ -6,12 +6,13 @@ import { trapFocus } from "./focusTrap";
 import { CheckpointContent } from "./CheckpointContent";
 import type { ParsedCheckpointContent } from "../types/checkpoint";
 
-export function CheckpointPanel(): JSX.Element | null {
+export function CheckpointPanel(): React.JSX.Element | null {
   const {
-    world: { config },
+    world,
     state,
     dispatch,
   } = useWorldStoreContext();
+  const { config } = world;
   const [content, setContent] = useState<ParsedCheckpointContent | null>(null);
   const panelRef = useRef<HTMLElement | null>(null);
 
@@ -42,10 +43,20 @@ export function CheckpointPanel(): JSX.Element | null {
     return null;
   }
 
+  const checkpointTitle = state.checkpointNodeId
+    ? `${world.nodesById[state.checkpointNodeId]?.name ?? state.checkpointNodeId}${config.ui.checkpointPanel.titleSuffix}`
+    : "Checkpoint";
+
   return (
-    <aside className="checkpoint-panel" data-testid="checkpoint-panel" ref={panelRef} tabIndex={-1}>
+    <aside
+      className="checkpoint-panel"
+      data-testid="checkpoint-panel"
+      ref={panelRef}
+      tabIndex={-1}
+      style={{ width: `min(${config.ui.checkpointPanel.widthPercent}vw, 680px)` }}
+    >
       <div className="checkpoint-panel-header">
-        <h2>{state.checkpointNodeId ? `${state.checkpointNodeId}${config.ui.checkpointPanel.titleSuffix}` : "Checkpoint"}</h2>
+        <h2>{checkpointTitle}</h2>
         <button onClick={() => dispatch({ type: "CLOSE_CHECKPOINT" })}>Close (Esc)</button>
       </div>
       {content ? <CheckpointContent content={content} /> : <p>Loading checkpoint content...</p>}

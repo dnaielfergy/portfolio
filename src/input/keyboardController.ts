@@ -3,7 +3,16 @@ import { useEffect } from "react";
 import type { WorldEvent } from "../types/events";
 import type { WorldState } from "../types/world";
 
-const MOVEMENT_KEYS = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
+const MOVEMENT_KEYS = new Set([
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "KeyW",
+  "KeyA",
+  "KeyS",
+  "KeyD",
+]);
 
 export interface KeyboardControllerOptions {
   worldState: WorldState;
@@ -23,7 +32,7 @@ export function useKeyboardController({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       if (worldState === "intro") {
-        onEvent({ type: "INTRO_SKIPPED" });
+        onEvent({ type: "INTRO_SKIP_REQUESTED" });
         return;
       }
 
@@ -31,8 +40,9 @@ export function useKeyboardController({
         onEvent({ type: "TUTORIAL_DISMISSED" });
       }
 
-      if (MOVEMENT_KEYS.has(event.key)) {
-        onMovementKey(event.key, true);
+      const key = event.code || event.key;
+      if (MOVEMENT_KEYS.has(key)) {
+        onMovementKey(key, true);
       }
 
       if (event.key === "Enter") {
@@ -45,8 +55,9 @@ export function useKeyboardController({
     };
 
     const onKeyUp = (event: KeyboardEvent): void => {
-      if (MOVEMENT_KEYS.has(event.key)) {
-        onMovementKey(event.key, false);
+      const key = event.code || event.key;
+      if (MOVEMENT_KEYS.has(key)) {
+        onMovementKey(key, false);
       }
     };
 

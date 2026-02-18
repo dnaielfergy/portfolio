@@ -1,6 +1,6 @@
 import { useWorldStoreContext } from "../state/worldStore";
 
-export function FinalStatePanel(): JSX.Element | null {
+export function FinalStatePanel(): React.JSX.Element | null {
   const {
     world: { config },
     state,

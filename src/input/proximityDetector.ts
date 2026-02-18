@@ -1,4 +1,4 @@
-import type { WorldNode } from "../types/world";
+import type { WorldNode, WorldState } from "../types/world";
 
 export function isInsideNodeRadius(
   player: { x: number; y: number },
@@ -14,4 +14,17 @@ export function findNearbyNode(
   nodes: WorldNode[],
 ): WorldNode | undefined {
   return nodes.find((node) => isInsideNodeRadius(player, node));
+}
+
+export function isNodeOpenableNow(params: {
+  worldState: WorldState;
+  isAvailable: boolean;
+  player: { x: number; y: number };
+  node: Pick<WorldNode, "coords" | "radius"> | undefined;
+}): boolean {
+  if (!params.node) {
+    return false;
+  }
+
+  return params.worldState === "exploring" && params.isAvailable && isInsideNodeRadius(params.player, params.node);
 }

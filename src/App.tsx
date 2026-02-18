@@ -6,6 +6,7 @@ import { initWorld } from "./bootstrap/initWorld";
 import { resolveEnterAction } from "./input/actionRouter";
 import { useKeyboardController } from "./input/keyboardController";
 import { findNearbyNode } from "./input/proximityDetector";
+import { resolveQualityTier } from "./postfx/qualityTier";
 import { WorldCanvas } from "./scene/WorldCanvas";
 import { useWorldStore, WorldStoreProvider } from "./state/worldStore";
 import { CheckpointPanel } from "./ui/CheckpointPanel";
@@ -15,22 +16,32 @@ import { StartOverlay } from "./ui/StartOverlay";
 import { TutorialOverlay } from "./ui/TutorialOverlay";
 import type { InitWorldResult } from "./bootstrap/initWorld";
 
-type MovementKey = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
+type MovementKey =
+  | "ArrowUp"
+  | "ArrowDown"
+  | "ArrowLeft"
+  | "ArrowRight"
+  | "KeyW"
+  | "KeyA"
+  | "KeyS"
+  | "KeyD";
 
-function RuntimeApp({ world }: InitWorldResult): JSX.Element {
+function RuntimeApp({ world }: InitWorldResult): React.JSX.Element {
   const store = useWorldStore(world);
+  const { state, dispatch } = store;
+
   const movementKeysRef = useRef<Set<MovementKey>>(new Set());
   const transformService = useMemo(
     () => createVehicleTransformService(world.config.vehicles.transformRules),
     [world.config.vehicles.transformRules],
   );
-  const previousStageRef = useRef(store.state.activeVehicleStageId);
+  const previousStageRef = useRef(state.activeVehicleStageId);
 
   useKeyboardController({
-    worldState: store.state.worldState,
-    onEvent: store.dispatch,
+    worldState: state.worldState,
+    onEvent: dispatch,
     onMovementKey: (key, pressed) => {
-      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "KeyW", "KeyA", "KeyS", "KeyD"].includes(key)) {
         return;
       }
 
@@ -42,20 +53,25 @@ function RuntimeApp({ world }: InitWorldResult): JSX.Element {
       }
     },
     onEnter: () => {
-      const event = resolveEnterAction(store.state, world.config);
+      const event = resolveEnterAction(state, world.config);
       if (event) {
-        store.dispatch(event);
+        dispatch(event);
       }
     },
     onEscape: () => {
-      if (store.state.worldState === "checkpointOpen") {
-        store.dispatch({ type: "CLOSE_CHECKPOINT" });
+      if (state.worldState === "checkpointOpen") {
+        dispatch({ type: "CLOSE_CHECKPOINT" });
       }
     },
   });
 
   useEffect(() => {
-    if (store.state.worldState !== "intro") {
+    const tier = resolveQualityTier();
+    dispatch({ type: "QUALITY_TIER_DETECTED", tier });
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (state.worldState !== "intro") {
       return;
     }
 
@@ -66,7 +82,7 @@ function RuntimeApp({ world }: InitWorldResult): JSX.Element {
       .play()
       .then(() => {
         if (!cancelled) {
-          store.dispatch({ type: "INTRO_COMPLETED" });
+          dispatch({ type: "INTRO_COMPLETED" });
         }
       })
       .catch((error: unknown) => {
@@ -76,34 +92,38 @@ function RuntimeApp({ world }: InitWorldResult): JSX.Element {
     return () => {
       cancelled = true;
     };
-  }, [store, store.state.worldState, world.config.intro]);
+  }, [dispatch, state.worldState, world.config.intro]);
 
   useEffect(() => {
-    if (store.state.worldState !== "focusCharlotte") {
+    if (state.worldState !== "focusCharlotte") {
       return;
     }
 
     const timeout = window.setTimeout(() => {
-      store.dispatch({ type: "FOCUS_CHARLOTTE_COMPLETED" });
+      dispatch({ type: "FOCUS_CHARLOTTE_COMPLETED" });
     }, 1200);
 
     return () => window.clearTimeout(timeout);
-  }, [store, store.state.worldState]);
+  }, [dispatch, state.worldState]);
 
   useEffect(() => {
-    if (store.state.worldState !== "transforming") {
+    if (state.worldState !== "transforming") {
       return;
     }
 
     const fromStage = previousStageRef.current;
-    const toStage = store.state.activeVehicleStageId;
+    const toStage = state.activeVehicleStageId;
     let cancelled = false;
 
     transformService
-      .trigger(fromStage, toStage)
+      .trigger(fromStage, toStage, world.config.vehicles.transformRules, (progress) => {
+        if (!cancelled) {
+          dispatch({ type: "TRANSFORM_PROGRESS", progress });
+        }
+      })
       .then(() => {
         if (!cancelled) {
-          store.dispatch({ type: "TRANSFORM_COMPLETED" });
+          dispatch({ type: "TRANSFORM_COMPLETED" });
         }
       })
       .catch((error: unknown) => {
@@ -113,14 +133,14 @@ function RuntimeApp({ world }: InitWorldResult): JSX.Element {
     return () => {
       cancelled = true;
     };
-  }, [store, store.state.activeVehicleStageId, store.state.worldState, transformService]);
+  }, [dispatch, state.activeVehicleStageId, state.worldState, transformService, world.config.vehicles.transformRules]);
 
   useEffect(() => {
-    previousStageRef.current = store.state.activeVehicleStageId;
-  }, [store.state.activeVehicleStageId]);
+    previousStageRef.current = state.activeVehicleStageId;
+  }, [state.activeVehicleStageId]);
 
   useEffect(() => {
-    if (store.state.worldState !== "exploring" || store.state.player.movementLocked) {
+    if (state.worldState !== "exploring" || state.player.movementLocked) {
       return;
     }
 
@@ -135,32 +155,35 @@ function RuntimeApp({ world }: InitWorldResult): JSX.Element {
       let vx = 0;
       let vy = 0;
 
-      if (movementKeysRef.current.has("ArrowLeft")) vx -= speed;
-      if (movementKeysRef.current.has("ArrowRight")) vx += speed;
-      if (movementKeysRef.current.has("ArrowUp")) vy += speed;
-      if (movementKeysRef.current.has("ArrowDown")) vy -= speed;
+      if (movementKeysRef.current.has("ArrowLeft") || movementKeysRef.current.has("KeyA")) vx -= speed;
+      if (movementKeysRef.current.has("ArrowRight") || movementKeysRef.current.has("KeyD")) vx += speed;
+      if (movementKeysRef.current.has("ArrowUp") || movementKeysRef.current.has("KeyW")) vy += speed;
+      if (movementKeysRef.current.has("ArrowDown") || movementKeysRef.current.has("KeyS")) vy -= speed;
 
       const hasMovement = vx !== 0 || vy !== 0;
       if (hasMovement) {
         const nextPosition = {
-          x: store.state.player.position.x + vx * deltaSeconds,
-          y: store.state.player.position.y + vy * deltaSeconds,
+          x: state.player.position.x + vx * deltaSeconds,
+          y: state.player.position.y + vy * deltaSeconds,
         };
 
-        store.dispatch({ type: "PLAYER_MOVED", position: nextPosition, velocity: { x: vx, y: vy } });
+        dispatch({ type: "PLAYER_MOVED", position: nextPosition, velocity: { x: vx, y: vy } });
 
         const nearbyNode = findNearbyNode(nextPosition, world.config.nodes);
-        if (nearbyNode && nearbyNode.id !== store.state.activeNodeId) {
-          store.dispatch({ type: "ACTIVE_NODE_CHANGED", nodeId: nearbyNode.id });
+        if (nearbyNode && nearbyNode.id !== state.activeNodeId) {
+          dispatch({ type: "ACTIVE_NODE_CHANGED", nodeId: nearbyNode.id });
 
-          if (nearbyNode.id === world.config.progression.finalNodeId) {
-            store.dispatch({ type: "ENTER_FINAL_NODE" });
+          if (
+            nearbyNode.id === world.config.progression.finalNodeId &&
+            state.progression.availableNodeIds.has(nearbyNode.id)
+          ) {
+            dispatch({ type: "ENTER_FINAL_NODE" });
           }
         }
-      } else if (store.state.player.velocity.x !== 0 || store.state.player.velocity.y !== 0) {
-        store.dispatch({
+      } else if (state.player.velocity.x !== 0 || state.player.velocity.y !== 0) {
+        dispatch({
           type: "PLAYER_MOVED",
-          position: store.state.player.position,
+          position: state.player.position,
           velocity: { x: 0, y: 0 },
         });
       }
@@ -170,7 +193,7 @@ function RuntimeApp({ world }: InitWorldResult): JSX.Element {
 
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [store, store.state.activeNodeId, store.state.player, store.state.worldState, world.config]);
+  }, [dispatch, state.activeNodeId, state.player, state.progression.availableNodeIds, state.worldState, world.config]);
 
   return (
     <WorldStoreProvider store={store}>
@@ -186,7 +209,7 @@ function RuntimeApp({ world }: InitWorldResult): JSX.Element {
   );
 }
 
-export default function App(): JSX.Element {
+export default function App(): React.JSX.Element {
   const [result, setResult] = useState<InitWorldResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 

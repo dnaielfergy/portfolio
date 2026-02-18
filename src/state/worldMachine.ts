@@ -26,6 +26,7 @@ export function transitionState(from: WorldState, to: WorldState): WorldState {
 
 export function reduceWorldState(state: WorldState, event: WorldEvent): WorldState {
   switch (event.type) {
+    case "INTRO_SKIP_REQUESTED":
     case "INTRO_COMPLETED":
     case "INTRO_SKIPPED":
       return transitionState(state, "idleMap");
@@ -37,6 +38,7 @@ export function reduceWorldState(state: WorldState, event: WorldEvent): WorldSta
       return transitionState(state, "exploring");
     case "OPEN_CHECKPOINT":
       return transitionState(state, "checkpointOpen");
+    case "CHECKPOINT_COMPLETED":
     case "CLOSE_CHECKPOINT":
       return transitionState(state, "exploring");
     case "TRANSFORM_STARTED":
@@ -47,6 +49,9 @@ export function reduceWorldState(state: WorldState, event: WorldEvent): WorldSta
       return transitionState(state, "finalState");
     case "PLAYER_MOVED":
     case "ACTIVE_NODE_CHANGED":
+    case "HOVERED_NODE_CHANGED":
+    case "TRANSFORM_PROGRESS":
+    case "QUALITY_TIER_DETECTED":
       return state;
     case "FORCE_STATE":
       return event.state;

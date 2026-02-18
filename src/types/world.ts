@@ -37,10 +37,15 @@ export interface StyleConfig {
   pathStyle: {
     baseColor: string;
     highlightColor: string;
+    loadedColor?: string;
+    completedColor?: string;
+    nextColor?: string;
     thickness: number;
     elevation: number;
     pulseOnIntro: boolean;
     traceDurationMs: number;
+    introSweepMs?: number;
+    stateFadeMs?: number;
   };
   nodeMarkerStyle: {
     shape: "disc";
@@ -161,6 +166,10 @@ export interface WorldNode {
     x: number;
     y: number;
   };
+  mapAnchorPx?: {
+    x: number;
+    y: number;
+  };
   radius: number;
   marker: {
     label: boolean;
@@ -185,6 +194,7 @@ export interface WorldEdge {
   visibleWhen: VisibleRule;
   styleKey?: string;
   waypoints?: Array<{ x: number; y: number }>;
+  renderWaypointsPx?: Array<{ x: number; y: number }>;
 }
 
 export interface ProgressionConfig {
@@ -230,20 +240,71 @@ export interface RuntimeProgression {
   completedNodeIds: Set<NodeId>;
 }
 
+export interface SceneCoords {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface RenderNode {
+  id: NodeId;
+  nodeType: NodeType;
+  region: string;
+  radius: number;
+  scenePosition: SceneCoords;
+  worldPosition: {
+    x: number;
+    y: number;
+  };
+  labelText?: string;
+  labelPriority?: "key" | "normal";
+  labelVisibleByDefault?: boolean;
+  labelOffset?: SceneCoords;
+}
+
+export interface RenderEdge {
+  id: EdgeId;
+  from: NodeId;
+  to: NodeId;
+  type: EdgeType;
+  scenePoints: SceneCoords[];
+  visibleWhen: VisibleRule;
+}
+
+export interface CameraRuntimeState {
+  position: SceneCoords;
+  lookAt: SceneCoords;
+  fov: number;
+  damping: number;
+}
+
+export interface TransformState {
+  status: "idle" | "running";
+  progress: number;
+  fromStage: string;
+  toStage: string;
+}
+
 export interface NormalizedWorld {
   config: WorldConfig;
   nodesById: Record<NodeId, WorldNode>;
   edgesById: Record<EdgeId, WorldEdge>;
   adjacency: Record<NodeId, NodeId[]>;
+  renderNodes: RenderNode[];
+  renderNodesById: Record<NodeId, RenderNode>;
+  renderEdges: RenderEdge[];
 }
 
 export interface RuntimeWorldStore {
   worldState: WorldState;
   activeNodeId: NodeId;
+  hoveredNodeId?: NodeId;
   isCheckpointOpen: boolean;
   checkpointNodeId?: NodeId;
   activeVehicleStageId: string;
   player: PlayerState;
   progression: RuntimeProgression;
   qualityTier: "high" | "medium" | "low";
+  transform: TransformState;
+  cameraRuntime: CameraRuntimeState;
 }

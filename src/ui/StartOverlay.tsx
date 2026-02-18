@@ -1,6 +1,6 @@
 import { useWorldStoreContext } from "../state/worldStore";
 
-export function StartOverlay(): JSX.Element | null {
+export function StartOverlay(): React.JSX.Element | null {
   const {
     world: { config },
     state,

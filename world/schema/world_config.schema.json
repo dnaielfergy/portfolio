@@ -71,10 +71,15 @@
           "properties": {
             "baseColor": { "$ref": "#/$defs/hexColor" },
             "highlightColor": { "$ref": "#/$defs/hexColor" },
+            "loadedColor": { "$ref": "#/$defs/hexColor" },
+            "completedColor": { "$ref": "#/$defs/hexColor" },
+            "nextColor": { "$ref": "#/$defs/hexColor" },
             "thickness": { "type": "number", "exclusiveMinimum": 0 },
             "elevation": { "type": "number", "minimum": 0 },
             "pulseOnIntro": { "type": "boolean" },
-            "traceDurationMs": { "type": "integer", "minimum": 1 }
+            "traceDurationMs": { "type": "integer", "minimum": 1 },
+            "introSweepMs": { "type": "integer", "minimum": 1 },
+            "stateFadeMs": { "type": "integer", "minimum": 0 }
           }
         },
         "nodeMarkerStyle": {
@@ -276,6 +281,15 @@
               "y": { "type": "number" }
             }
           },
+          "mapAnchorPx": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["x", "y"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" }
+            }
+          },
           "radius": { "type": "number", "exclusiveMinimum": 0 },
           "marker": {
             "type": "object",
@@ -381,6 +395,18 @@
           },
           "styleKey": { "type": "string", "minLength": 1 },
           "waypoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" }
+              }
+            }
+          },
+          "renderWaypointsPx": {
             "type": "array",
             "items": {
               "type": "object",

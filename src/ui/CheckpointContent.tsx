@@ -1,6 +1,6 @@
 import type { ParsedCheckpointContent } from "../types/checkpoint";
 
-export function CheckpointContent({ content }: { content: ParsedCheckpointContent }): JSX.Element {
+export function CheckpointContent({ content }: { content: ParsedCheckpointContent }): React.JSX.Element {
   return (
     <article>
       <h2>{content.frontmatter.title}</h2>

@@ -24,6 +24,20 @@ This document defines the authoritative data model for the interactive portfolio
 - X axis: west to east (negative to positive).
 - Y axis: south to north (negative to positive).
 
+### 2.1 Anchor-Derived Placement Workflow
+
+- `map.png` is the geometric reference for anchor selection.
+- Pixel anchors are stored in `world/calibration/map_anchors.json`.
+- The calibration script `scripts/calibrate-map-coords.mjs` converts pixel anchors into `nodes[*].coords` and `edges[*].waypoints` in `world/schema/world_schema_example.json`.
+
+Deterministic conversion:
+
+- `mapPlaneWidth = mapPlaneHeight * (imageWidth / imageHeight)`
+- `sceneX = (px / imageWidth - 0.5) * mapPlaneWidth`
+- `sceneZ = (py / imageHeight - 0.5) * mapPlaneHeight`
+- `worldX = sceneX / SCENE_SCALE`
+- `worldY = -sceneZ / SCENE_SCALE`
+
 ## 3. Global State Machine
 
 Allowed states:
@@ -72,10 +86,15 @@ Allowed transitions:
 - `materials.noHighFreqTextures: boolean`
 - `pathStyle.baseColor: string`
 - `pathStyle.highlightColor: string`
+- `pathStyle.loadedColor?: string` (default `#8F8B84`)
+- `pathStyle.completedColor?: string` (default `pathStyle.baseColor`)
+- `pathStyle.nextColor?: string` (default `pathStyle.highlightColor`)
 - `pathStyle.thickness: number`
 - `pathStyle.elevation: number`
 - `pathStyle.pulseOnIntro: boolean`
 - `pathStyle.traceDurationMs: number`
+- `pathStyle.introSweepMs?: number` (default `1800`)
+- `pathStyle.stateFadeMs?: number` (default `250`)
 - `nodeMarkerStyle.shape: "disc"`
 - `nodeMarkerStyle.defaultScale: number`
 - `nodeMarkerStyle.completedColor: string`
@@ -164,6 +183,7 @@ Each node contains:
 - `type: "main" | "side" | "final"`
 - `region: string`
 - `coords: {x:number, y:number}`
+- `mapAnchorPx?: {x:number, y:number}` (authoring/calibration reference, optional)
 - `radius: number`
 - `marker: {label:boolean, icon:string}`
 - `checkpointContentRef: string`
@@ -193,6 +213,7 @@ Each edge contains:
 - `visibleWhen: VisibleRule`
 - `styleKey?: string`
 - `waypoints?: Array<{x:number, y:number}>`
+- `renderWaypointsPx?: Array<{x:number, y:number}>` (authoring/calibration reference, optional)
 
 `VisibleRule` variants:
 

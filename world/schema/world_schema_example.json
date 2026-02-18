@@ -6,7 +6,7 @@
     "resumePdfUrl": "/resume.pdf"
   },
   "assets": {
-    "mapImage": "/assets/map.png",
+    "mapImage": "/assets/map_without_line.png",
     "referenceImages": {
       "charlotte": "/assets/charlotte.png",
       "georgia_tech": "/assets/georgia_tech.png",
@@ -27,17 +27,22 @@
     "pathStyle": {
       "baseColor": "#C9A227",
       "highlightColor": "#FFD36A",
-      "thickness": 1.0,
+      "loadedColor": "#8F8B84",
+      "completedColor": "#C9A227",
+      "nextColor": "#FFD36A",
+      "thickness": 1,
       "elevation": 0.2,
       "pulseOnIntro": true,
-      "traceDurationMs": 1800
+      "traceDurationMs": 1800,
+      "introSweepMs": 1800,
+      "stateFadeMs": 250
     },
     "nodeMarkerStyle": {
       "shape": "disc",
-      "defaultScale": 1.0,
+      "defaultScale": 1,
       "completedColor": "#2B2B2B",
       "hoverGlow": true,
-      "labelOnProximity": true
+      "labelOnProximity": false
     },
     "fogStyle": {
       "introFogOpacity": 0.15,
@@ -45,13 +50,41 @@
       "sfFogOpacity": 0.22
     },
     "regionPalettes": {
-      "charlotte": { "primary": "#0085CA", "secondary": "#000000", "accent": "#C0C0C0" },
-      "georgia_tech": { "primary": "#FFFFFF", "secondary": "#B3A369", "accent": "#C9A227" },
-      "aquarium": { "primary": "#002B5C", "secondary": "#0B4F6C", "accent": "#79C7FF" },
-      "parsons": { "primary": "#4B5320", "secondary": "#7A5C3E", "accent": "#2B2B2B" },
-      "wisk": { "primary": "#FFD100", "secondary": "#FFFFFF", "accent": "#000000" },
-      "fictiv": { "primary": "#58B99E", "secondary": "#2B2B2B", "accent": "#FFFFFF" },
-      "san_francisco": { "primary": "#AEB6BF", "secondary": "#2B2B2B", "accent": "#58B99E" }
+      "charlotte": {
+        "primary": "#0085CA",
+        "secondary": "#000000",
+        "accent": "#C0C0C0"
+      },
+      "georgia_tech": {
+        "primary": "#FFFFFF",
+        "secondary": "#B3A369",
+        "accent": "#C9A227"
+      },
+      "aquarium": {
+        "primary": "#002B5C",
+        "secondary": "#0B4F6C",
+        "accent": "#79C7FF"
+      },
+      "parsons": {
+        "primary": "#4B5320",
+        "secondary": "#7A5C3E",
+        "accent": "#2B2B2B"
+      },
+      "wisk": {
+        "primary": "#FFD100",
+        "secondary": "#FFFFFF",
+        "accent": "#000000"
+      },
+      "fictiv": {
+        "primary": "#58B99E",
+        "secondary": "#2B2B2B",
+        "accent": "#FFFFFF"
+      },
+      "san_francisco": {
+        "primary": "#AEB6BF",
+        "secondary": "#2B2B2B",
+        "accent": "#58B99E"
+      }
     }
   },
   "intro": {
@@ -76,17 +109,88 @@
     }
   },
   "cameraPresets": {
-    "introStart": { "position": [-40, 40, 60], "lookAt": [-25, 0, 0], "fov": 42, "damping": 0.08 },
-    "introEnd": { "position": [0, 65, 110], "lookAt": [0, 0, 0], "fov": 42, "damping": 0.08 },
-    "focusCharlotte": { "position": [35, 35, 45], "lookAt": [28, -5, 0], "fov": 42, "damping": 0.1 },
-    "checkpointDefault": { "position": [0, 30, 35], "lookAt": [0, 0, 0], "fov": 42, "damping": 0.12 },
-    "finalSF": { "position": [-30, 38, 52], "lookAt": [-28, 5, 0], "fov": 40, "damping": 0.08 }
+    "introStart": {
+      "position": [
+        -40,
+        40,
+        60
+      ],
+      "lookAt": [
+        -25,
+        0,
+        0
+      ],
+      "fov": 42,
+      "damping": 0.08
+    },
+    "introEnd": {
+      "position": [
+        0,
+        65,
+        110
+      ],
+      "lookAt": [
+        0,
+        0,
+        0
+      ],
+      "fov": 42,
+      "damping": 0.08
+    },
+    "focusCharlotte": {
+      "position": [
+        35,
+        35,
+        45
+      ],
+      "lookAt": [
+        28,
+        -5,
+        0
+      ],
+      "fov": 42,
+      "damping": 0.1
+    },
+    "checkpointDefault": {
+      "position": [
+        0,
+        30,
+        35
+      ],
+      "lookAt": [
+        0,
+        0,
+        0
+      ],
+      "fov": 42,
+      "damping": 0.12
+    },
+    "finalSF": {
+      "position": [
+        -30,
+        38,
+        52
+      ],
+      "lookAt": [
+        -28,
+        5,
+        0
+      ],
+      "fov": 40,
+      "damping": 0.08
+    }
   },
   "ui": {
-    "startButton": { "label": "Start Journey", "centered": true },
+    "startButton": {
+      "label": "Start Journey",
+      "centered": true
+    },
     "tutorial": {
       "title": "Quick Tutorial",
-      "lines": ["Use Arrow Keys to Navigate", "Press Enter to Open Checkpoint"],
+      "lines": [
+        "Use Arrow Keys to Navigate",
+        "Press Enter to Open Checkpoint"
+      ],
       "dismissOnAnyInput": true
     },
     "hud": {
@@ -105,11 +209,36 @@
   },
   "vehicles": {
     "stages": [
-      { "id": "runner", "label": "Runner", "ref": "/world/vehicles/vehicles_spec.md" },
-      { "id": "wreck", "label": "Ramblin Wreck", "ref": "/world/vehicles/vehicles_spec.md" },
-      { "id": "parsons_truck", "label": "Parsons Industrial Vehicle", "ref": "/world/vehicles/vehicles_spec.md" },
-      { "id": "wisk_evtol", "label": "Wisk eVTOL", "ref": "/world/vehicles/vehicles_spec.md" },
-      { "id": "fictiv_mech", "label": "Fictiv Mech", "ref": "/world/vehicles/vehicles_spec.md" }
+      {
+        "id": "runner",
+        "label": "Runner",
+        "ref": "/world/vehicles/vehicles_spec.md"
+      },
+      {
+        "id": "wreck",
+        "label": "Ramblin Wreck",
+        "ref": "/world/vehicles/vehicles_spec.md"
+      },
+      {
+        "id": "parsons_truck",
+        "label": "Parsons Industrial Vehicle",
+        "ref": "/world/vehicles/vehicles_spec.md"
+      },
+      {
+        "id": "wisk_evtol",
+        "label": "Wisk eVTOL",
+        "ref": "/world/vehicles/vehicles_spec.md"
+      },
+      {
+        "id": "fictiv_mech",
+        "label": "Fictiv Mech",
+        "ref": "/world/vehicles/vehicles_spec.md"
+      },
+      {
+        "id": "whale",
+        "label": "Aquarium Whale",
+        "ref": "/world/vehicles/vehicles_spec.md"
+      }
     ],
     "transformRules": {
       "durationMs": 500,
@@ -122,7 +251,7 @@
     "stageByNodeId": {
       "charlotte": "runner",
       "georgia_tech": "wreck",
-      "aquarium": "wreck",
+      "aquarium": "whale",
       "huntsville_parsons": "parsons_truck",
       "palo_alto_wisk": "wisk_evtol",
       "san_diego_fictiv": "fictiv_mech",
@@ -135,86 +264,172 @@
       "name": "Charlotte, NC",
       "type": "main",
       "region": "charlotte",
-      "coords": { "x": 28, "y": -6 },
+      "coords": {
+        "x": 23.875,
+        "y": -2.875
+      },
       "radius": 3.5,
-      "marker": { "label": true, "icon": "dot" },
+      "marker": {
+        "label": true,
+        "icon": "dot"
+      },
       "checkpointContentRef": "/content/checkpoints/charlotte.md",
-      "unlock": { "type": "start" },
-      "completion": { "type": "open_checkpoint_once" }
+      "unlock": {
+        "type": "start"
+      },
+      "completion": {
+        "type": "open_checkpoint_once"
+      }
     },
     {
       "id": "georgia_tech",
       "name": "Atlanta - Georgia Tech",
       "type": "main",
       "region": "georgia_tech",
-      "coords": { "x": 22, "y": -9 },
+      "coords": {
+        "x": 19.5,
+        "y": -6.625
+      },
       "radius": 3.5,
-      "marker": { "label": true, "icon": "dot" },
+      "marker": {
+        "label": true,
+        "icon": "dot"
+      },
       "checkpointContentRef": "/content/checkpoints/georgia_tech.md",
-      "unlock": { "type": "after_complete", "nodeId": "charlotte" },
-      "completion": { "type": "open_checkpoint_once" },
-      "landmarks": [{ "id": "tech_tower", "label": "Tech Tower" }]
+      "unlock": {
+        "type": "after_complete",
+        "nodeId": "charlotte"
+      },
+      "completion": {
+        "type": "open_checkpoint_once"
+      },
+      "landmarks": [
+        {
+          "id": "tech_tower",
+          "label": "Tech Tower"
+        }
+      ]
     },
     {
       "id": "aquarium",
       "name": "Georgia Aquarium",
       "type": "side",
       "region": "aquarium",
-      "coords": { "x": 20.5, "y": -9.2 },
-      "radius": 3.0,
-      "marker": { "label": true, "icon": "dot" },
+      "coords": {
+        "x": 17.5,
+        "y": -8.5
+      },
+      "radius": 3,
+      "marker": {
+        "label": true,
+        "icon": "dot"
+      },
       "checkpointContentRef": "/content/checkpoints/aquarium.md",
-      "unlock": { "type": "after_available", "nodeId": "georgia_tech" },
-      "completion": { "type": "open_checkpoint_once" }
+      "unlock": {
+        "type": "after_available",
+        "nodeId": "georgia_tech"
+      },
+      "completion": {
+        "type": "open_checkpoint_once"
+      }
     },
     {
       "id": "huntsville_parsons",
       "name": "Huntsville - Parsons",
       "type": "main",
       "region": "parsons",
-      "coords": { "x": 16, "y": -7 },
+      "coords": {
+        "x": 11.4375,
+        "y": -4.8125
+      },
       "radius": 3.5,
-      "marker": { "label": true, "icon": "dot" },
+      "marker": {
+        "label": true,
+        "icon": "dot"
+      },
       "checkpointContentRef": "/content/checkpoints/huntsville_parsons.md",
-      "unlock": { "type": "after_complete", "nodeId": "georgia_tech" },
-      "completion": { "type": "open_checkpoint_once" }
+      "unlock": {
+        "type": "after_complete",
+        "nodeId": "georgia_tech"
+      },
+      "completion": {
+        "type": "open_checkpoint_once"
+      }
     },
     {
       "id": "palo_alto_wisk",
       "name": "Palo Alto - Wisk",
       "type": "main",
       "region": "wisk",
-      "coords": { "x": -24, "y": 7 },
+      "coords": {
+        "x": -28.9375,
+        "y": 0.75
+      },
       "radius": 3.5,
-      "marker": { "label": true, "icon": "dot" },
+      "marker": {
+        "label": true,
+        "icon": "dot"
+      },
       "checkpointContentRef": "/content/checkpoints/wisk.md",
-      "unlock": { "type": "after_complete", "nodeId": "huntsville_parsons" },
-      "completion": { "type": "open_checkpoint_once" }
+      "unlock": {
+        "type": "after_complete",
+        "nodeId": "huntsville_parsons"
+      },
+      "completion": {
+        "type": "open_checkpoint_once"
+      }
     },
     {
       "id": "san_diego_fictiv",
       "name": "San Diego - Fictiv",
       "type": "main",
       "region": "fictiv",
-      "coords": { "x": -28, "y": -8 },
+      "coords": {
+        "x": -26,
+        "y": -6
+      },
       "radius": 3.5,
-      "marker": { "label": true, "icon": "dot" },
+      "marker": {
+        "label": true,
+        "icon": "dot"
+      },
       "checkpointContentRef": "/content/checkpoints/fictiv_sd.md",
-      "unlock": { "type": "after_complete", "nodeId": "palo_alto_wisk" },
-      "completion": { "type": "open_checkpoint_once" }
+      "unlock": {
+        "type": "after_complete",
+        "nodeId": "palo_alto_wisk"
+      },
+      "completion": {
+        "type": "open_checkpoint_once"
+      }
     },
     {
       "id": "san_francisco",
       "name": "San Francisco",
       "type": "final",
       "region": "san_francisco",
-      "coords": { "x": -29, "y": 10 },
-      "radius": 4.0,
-      "marker": { "label": true, "icon": "dot" },
+      "coords": {
+        "x": -31.125,
+        "y": 3.125
+      },
+      "radius": 4,
+      "marker": {
+        "label": true,
+        "icon": "dot"
+      },
       "checkpointContentRef": "/content/checkpoints/san_francisco.md",
-      "unlock": { "type": "after_complete", "nodeId": "san_diego_fictiv" },
-      "completion": { "type": "enter_node" },
-      "landmarks": [{ "id": "golden_gate", "label": "Golden Gate Bridge" }]
+      "unlock": {
+        "type": "after_complete",
+        "nodeId": "san_diego_fictiv"
+      },
+      "completion": {
+        "type": "enter_node"
+      },
+      "landmarks": [
+        {
+          "id": "golden_gate",
+          "label": "Golden Gate Bridge"
+        }
+      ]
     }
   ],
   "edges": [
@@ -223,42 +438,107 @@
       "from": "charlotte",
       "to": "georgia_tech",
       "type": "main",
-      "visibleWhen": { "type": "always" }
+      "visibleWhen": {
+        "type": "always"
+      }
     },
     {
       "id": "e_gt_to_huntsville",
       "from": "georgia_tech",
       "to": "huntsville_parsons",
       "type": "main",
-      "visibleWhen": { "type": "after_available", "nodeId": "georgia_tech" }
+      "visibleWhen": {
+        "type": "after_available",
+        "nodeId": "georgia_tech"
+      },
+      "waypoints": [
+        {
+          "x": 16.25,
+          "y": -5.9375
+        }
+      ]
     },
     {
       "id": "e_gt_to_aquarium",
       "from": "georgia_tech",
       "to": "aquarium",
       "type": "side",
-      "visibleWhen": { "type": "after_available", "nodeId": "georgia_tech" }
+      "visibleWhen": {
+        "type": "after_available",
+        "nodeId": "georgia_tech"
+      }
     },
     {
       "id": "e_huntsville_to_wisk",
       "from": "huntsville_parsons",
       "to": "palo_alto_wisk",
       "type": "main",
-      "visibleWhen": { "type": "after_complete", "nodeId": "huntsville_parsons" }
+      "visibleWhen": {
+        "type": "after_complete",
+        "nodeId": "huntsville_parsons"
+      },
+      "waypoints": [
+        {
+          "x": 4.5,
+          "y": -4.75
+        },
+        {
+          "x": -3,
+          "y": -8.0625
+        },
+        {
+          "x": -16.75,
+          "y": -8.1875
+        },
+        {
+          "x": -23.625,
+          "y": -6.9375
+        }
+      ]
     },
     {
       "id": "e_wisk_to_sd",
       "from": "palo_alto_wisk",
       "to": "san_diego_fictiv",
       "type": "main",
-      "visibleWhen": { "type": "after_complete", "nodeId": "palo_alto_wisk" }
+      "visibleWhen": {
+        "type": "after_complete",
+        "nodeId": "palo_alto_wisk"
+      },
+      "waypoints": [
+        {
+          "x": -29.75,
+          "y": -2.25
+        },
+        {
+          "x": -29.5625,
+          "y": -5.0625
+        },
+        {
+          "x": -27.6875,
+          "y": -6.625
+        }
+      ]
     },
     {
       "id": "e_sd_to_sf",
       "from": "san_diego_fictiv",
       "to": "san_francisco",
       "type": "main",
-      "visibleWhen": { "type": "after_complete", "nodeId": "san_diego_fictiv" }
+      "visibleWhen": {
+        "type": "after_complete",
+        "nodeId": "san_diego_fictiv"
+      },
+      "waypoints": [
+        {
+          "x": -27.625,
+          "y": -4.375
+        },
+        {
+          "x": -29.25,
+          "y": -2
+        }
+      ]
     }
   ],
   "progression": {
@@ -273,7 +553,9 @@
       "san_francisco"
     ],
     "sideQuests": {
-      "georgia_tech": ["aquarium"]
+      "georgia_tech": [
+        "aquarium"
+      ]
     },
     "onCompleteNode": {
       "setNodeCompletedColor": "#2B2B2B",
