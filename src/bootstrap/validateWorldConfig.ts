@@ -123,6 +123,25 @@ function validateCrossReferences(config: WorldConfig): void {
     assert(validStageIds.has(stageId), `stageByNodeId references missing stage '${stageId}'`);
   }
 
+  if (config.style.scale) {
+    assert(
+      Number.isFinite(config.style.scale.worldVisualMultiplier),
+      "style.scale.worldVisualMultiplier must be a finite number",
+    );
+    assert(
+      Number.isFinite(config.style.scale.vehicleVisualMultiplier),
+      "style.scale.vehicleVisualMultiplier must be a finite number",
+    );
+    assert(
+      config.style.scale.worldVisualMultiplier >= 0.5 && config.style.scale.worldVisualMultiplier <= 2.5,
+      "style.scale.worldVisualMultiplier must be between 0.5 and 2.5",
+    );
+    assert(
+      config.style.scale.vehicleVisualMultiplier >= 0.5 && config.style.scale.vehicleVisualMultiplier <= 2.5,
+      "style.scale.vehicleVisualMultiplier must be between 0.5 and 2.5",
+    );
+  }
+
   validateEnvironment(config);
 }
 

@@ -100,6 +100,13 @@ At load time, runtime resolves:
 
 This resolution happens in `src/data/loadWorldConfig.ts`, and resulting collisions are used by `src/physics/collision.ts`.
 
+## Dev Calibration Panels
+
+In `dev` mode, calibration panels are enabled unless `VITE_ENABLE_CAMERA_CALIBRATION` is explicitly set to `false`, `0`, or `off`.
+
+- `Camera & Scale Calibration`: tune candidate camera presets/scale, then copy JSON for schema.
+- `Node Position Calibration`: drag a standalone test marker, fine-tune X/Y, and copy `{ "x": ..., "y": ... }` for `nodes[*].coords`.
+
 ### Collision Tuning Baseline
 
 - Baseline global collider radius is `0.85` in `world/environments/manifest.json`.

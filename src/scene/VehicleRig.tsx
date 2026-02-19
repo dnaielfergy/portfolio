@@ -5,11 +5,13 @@ import * as THREE from "three";
 import { SCENE_SCALE, toSceneCoords } from "../data/loadWorldConfig";
 import { resolveActivePlayerRadius } from "../physics/vehicleCollider";
 import { useWorldStoreContext } from "../state/worldStore";
+import { useCameraCalibration } from "../tuning/cameraCalibrationContext";
 import { VehicleStageMesh } from "./vehicles/stageRegistry";
 
 const SHOW_VEHICLE_COLLIDER_OUTLINE = true;
 
 export function VehicleRig(): React.JSX.Element {
+  const { activeVehicleVisualMultiplier } = useCameraCalibration();
   const {
     world,
     state,
@@ -87,6 +89,7 @@ export function VehicleRig(): React.JSX.Element {
     state.transform.status === "running" &&
     state.transform.progress > 0.75;
   const dustScale = 0.4 + state.transform.progress * 1.8;
+  const modelVisualScale = activeVehicleVisualMultiplier;
 
   return (
     <>
@@ -102,7 +105,7 @@ export function VehicleRig(): React.JSX.Element {
       ) : null}
 
       <group ref={groupRef} position={[0, 0, 0]}>
-        <group position={[0, 0.02, 0]}>
+        <group position={[0, 0.02, 0]} scale={[modelVisualScale, modelVisualScale, modelVisualScale]}>
           <VehicleStageMesh stage={renderedStage} />
         </group>
         {showDustPuff ? (

@@ -104,6 +104,8 @@ Allowed transitions:
 - `fogStyle.introFogOpacity: number`
 - `fogStyle.settleFogOpacity: number`
 - `fogStyle.sfFogOpacity: number`
+- `scale?.worldVisualMultiplier: number` (optional, default `1`, valid range `0.5..2.5`)
+- `scale?.vehicleVisualMultiplier: number` (optional, default `1`, valid range `0.5..2.5`)
 - `regionPalettes: Record<string, {primary:string, secondary:string, accent:string}>`
 
 ### 4.4 `intro`
@@ -140,6 +142,16 @@ Each preset contains:
 - `lookAt: [number, number, number]`
 - `fov: number`
 - `damping: number`
+
+Calibration workflow:
+
+- In dev mode, open `Camera & Scale Calibration` panel.
+- Toggle `Overcooked Candidate`, tune controls, and click `Copy JSON`.
+- Paste emitted `cameraPresets` and `style.scale` into `world/schema/world_schema_example.json`.
+- Use `Node Position Calibration` to move the standalone test marker and click `Copy Coords JSON`.
+- Paste copied `{ "x": ..., "y": ... }` into the target `nodes[*].coords` entry in `world/schema/world_schema_example.json`.
+- Node calibration is preview-only at runtime; schema edits are manual to keep production deterministic.
+- Keep production deterministic by locking final values in schema.
 
 ### 4.6 `ui`
 

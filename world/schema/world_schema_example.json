@@ -6,7 +6,7 @@
     "resumePdfUrl": "/resume.pdf"
   },
   "assets": {
-    "mapImage": "/assets/map.png",
+    "mapImage": "/assets/map_without_line.png",
     "referenceImages": {
       "charlotte": "/assets/charlotte.png",
       "georgia_tech": "/assets/georgia_tech.png",
@@ -48,6 +48,10 @@
       "introFogOpacity": 0.12,
       "settleFogOpacity": 0.06,
       "sfFogOpacity": 0.18
+    },
+    "scale": {
+      "worldVisualMultiplier": 1,
+      "vehicleVisualMultiplier": 2
     },
     "regionPalettes": {
       "charlotte": {
@@ -116,72 +120,72 @@
   "cameraPresets": {
     "introStart": {
       "position": [
-        -80,
-        80,
-        120
+        -50,
+        110.361,
+        71.559
       ],
       "lookAt": [
         -50,
         0,
         0
       ],
-      "fov": 42,
+      "fov": 33.4,
       "damping": 0.08
     },
     "introEnd": {
       "position": [
         0,
-        130,
-        220
+        125.656,
+        80.504
       ],
       "lookAt": [
         0,
         0,
         0
       ],
-      "fov": 42,
+      "fov": 33.4,
       "damping": 0.08
     },
     "focusCharlotte": {
       "position": [
-        35,
-        35,
-        45
+        28,
+        83.869,
+        56.651
       ],
       "lookAt": [
         28,
         -5,
         0
       ],
-      "fov": 42,
+      "fov": 32.4,
       "damping": 0.1
     },
     "checkpointDefault": {
       "position": [
         0,
-        64,
-        96
+        89.967,
+        59.633
       ],
       "lookAt": [
         0,
         0,
         0
       ],
-      "fov": 42,
+      "fov": 32.4,
       "damping": 0.12
     },
     "finalSF": {
       "position": [
-        -30,
-        38,
-        52
+        -28,
+        91.01,
+        54.862
       ],
       "lookAt": [
         -28,
         5,
         0
       ],
-      "fov": 40,
+      "fov": 31.4,
       "damping": 0.08
     }
   },

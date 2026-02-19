@@ -214,9 +214,17 @@ export async function loadWorldConfig(path = DEFAULT_WORLD_CONFIG_PATH): Promise
   );
 
   const environment = await resolveEnvironment(source.environment);
+  const scale = source.style.scale ?? {
+    worldVisualMultiplier: 1,
+    vehicleVisualMultiplier: 1,
+  };
 
   return {
     ...source,
+    style: {
+      ...source.style,
+      scale,
+    },
     environment,
   };
 }

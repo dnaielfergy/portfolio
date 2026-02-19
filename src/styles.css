@@ -58,6 +58,234 @@ body,
   text-decoration: none;
 }
 
+.camera-calibration-panel {
+  position: absolute;
+  z-index: 24;
+  top: 74px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 340px;
+  max-width: min(420px, 42vw);
+  max-height: min(78vh, 760px);
+  overflow: auto;
+  background: rgba(12, 17, 23, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  padding: 12px;
+}
+
+.camera-calibration-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.camera-calibration-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.camera-calibration-toggle button,
+.camera-calibration-actions button {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(15, 25, 36, 0.92);
+  color: #f8f9fb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+.camera-calibration-toggle button.is-active {
+  border-color: rgba(255, 211, 106, 0.9);
+  color: #ffd36a;
+}
+
+.camera-calibration-info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 10px;
+  font-size: 12px;
+  opacity: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.camera-calibration-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.camera-calibration-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.camera-calibration-control span {
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+
+.camera-calibration-control-row {
+  display: grid;
+  grid-template-columns: 1fr 84px;
+  gap: 8px;
+  align-items: center;
+}
+
+.camera-calibration-control-row input[type="number"] {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(15, 25, 36, 0.85);
+  color: #f8f9fb;
+  padding: 5px 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.camera-calibration-control-row input[type="range"] {
+  width: 100%;
+}
+
+.camera-calibration-metrics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.camera-calibration-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.camera-calibration-actions button:disabled {
+  opacity: 0.45;
+}
+
+.camera-calibration-copy-status {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.node-calibration-panel {
+  position: absolute;
+  z-index: 24;
+  top: 74px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 340px;
+  max-width: min(420px, 42vw);
+  max-height: min(78vh, 760px);
+  overflow: auto;
+  background: rgba(12, 17, 23, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  padding: 12px;
+}
+
+.node-calibration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.node-calibration-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+
+.node-calibration-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.node-calibration-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.node-calibration-field span {
+  font-size: 12px;
+}
+
+.node-calibration-field input,
+.node-calibration-field select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(15, 25, 36, 0.85);
+  color: #f8f9fb;
+  padding: 6px 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.node-calibration-field-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.node-calibration-field-row button,
+.node-calibration-nudges button,
+.node-calibration-actions button {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(15, 25, 36, 0.92);
+  color: #f8f9fb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+.node-calibration-nudges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.node-calibration-info {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.node-calibration-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.node-calibration-copy-status {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.node-probe-label {
+  background: rgba(12, 17, 23, 0.92);
+  color: #f8f9fb;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 6px 10px;
+  pointer-events: none;
+}
+
 .world-canvas {
   position: absolute;
   inset: 0;
@@ -179,6 +407,26 @@ body,
 @media (max-width: 900px) {
   .hud {
     gap: 10px;
+  }
+
+  .camera-calibration-panel {
+    top: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    max-width: none;
+    min-width: 0;
+    max-height: 42vh;
+  }
+
+  .node-calibration-panel {
+    top: auto;
+    left: 12px;
+    right: 12px;
+    bottom: calc(42vh + 24px);
+    max-width: none;
+    min-width: 0;
+    max-height: 34vh;
   }
 
   .overlay.tutorial,

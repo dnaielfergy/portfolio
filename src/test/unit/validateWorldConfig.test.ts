@@ -108,4 +108,36 @@ describe("validateWorldConfig", () => {
 
     expect(() => validateWorldConfig(invalid as unknown as WorldConfig)).toThrow(/radius|greater than 0|exclusiveMinimum/);
   });
+
+  it("accepts valid style.scale multipliers", () => {
+    const valid = {
+      ...typedWorldConfig,
+      style: {
+        ...typedWorldConfig.style,
+        scale: {
+          worldVisualMultiplier: 1.15,
+          vehicleVisualMultiplier: 1.08,
+        },
+      },
+    };
+
+    expect(() => validateWorldConfig(valid as unknown as WorldConfig)).not.toThrow();
+  });
+
+  it("rejects out-of-range style.scale multipliers", () => {
+    const invalid = {
+      ...typedWorldConfig,
+      style: {
+        ...typedWorldConfig.style,
+        scale: {
+          worldVisualMultiplier: 3.1,
+          vehicleVisualMultiplier: 0.9,
+        },
+      },
+    };
+
+    expect(() => validateWorldConfig(invalid as unknown as WorldConfig)).toThrow(
+      /worldVisualMultiplier must be between 0.5 and 2.5/,
+    );
+  });
 });

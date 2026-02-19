@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createCameraController } from "../../camera/cameraController";
+import { toSceneCoords } from "../../data/loadWorldConfig";
 import type { CameraContext, CameraSnapshot } from "../../camera/cameraController";
 
 const PRESETS = {
@@ -139,6 +140,17 @@ describe("cameraController exploring behavior", () => {
     expect(finalState.presetKey).toBe("finalSF");
   });
 
+  it("uses focusCharlotte preset key in focusCharlotte state", () => {
+    const controller = createCameraController({ presets: PRESETS });
+    const snapshot = controller.setState(
+      "focusCharlotte",
+      context({ state: "focusCharlotte", playerPosition: { x: 8, y: 2 } }),
+      { immediate: true },
+    );
+
+    expect(snapshot.presetKey).toBe("focusCharlotte");
+  });
+
   it("centers focusCharlotte lookAt on the player position", () => {
     const controller = createCameraController({ presets: PRESETS });
     const playerPosition = { x: 18, y: -4 };
@@ -170,6 +182,37 @@ describe("cameraController exploring behavior", () => {
     expect(tutorial.position.x).toBeCloseTo(exploring.position.x, 6);
     expect(tutorial.position.y).toBeCloseTo(exploring.position.y, 6);
     expect(tutorial.position.z).toBeCloseTo(exploring.position.z, 6);
+  });
+
+  it("applies follow-lead override while exploring", () => {
+    const controller = createCameraController({ presets: PRESETS });
+    const playerPosition = { x: 10, y: 5 };
+    const velocity = { x: 1, y: 0 };
+
+    const withoutLead = controller.setState(
+      "exploring",
+      context({
+        playerPosition,
+        playerVelocity: velocity,
+        followLeadDistanceOverride: 0,
+      }),
+      { immediate: true },
+    );
+    const withLead = controller.setState(
+      "exploring",
+      context({
+        playerPosition,
+        playerVelocity: velocity,
+        followLeadDistanceOverride: 2,
+      }),
+      { immediate: true },
+    );
+
+    const baseLookAt = toSceneCoords(playerPosition.x, playerPosition.y, 0);
+    const leadLookAt = toSceneCoords(playerPosition.x + 2, playerPosition.y, 0);
+    expect(withoutLead.lookAt.x).toBeCloseTo(baseLookAt.x, 6);
+    expect(withLead.lookAt.x).toBeCloseTo(leadLookAt.x, 6);
+    expect(withLead.lookAt.z).toBeCloseTo(baseLookAt.z, 6);
   });
 
   it("transitions smoothly from intro to idleMap without a snap", () => {

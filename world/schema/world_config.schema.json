@@ -105,6 +105,15 @@
             "sfFogOpacity": { "$ref": "#/$defs/opacity" }
           }
         },
+        "scale": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["worldVisualMultiplier", "vehicleVisualMultiplier"],
+          "properties": {
+            "worldVisualMultiplier": { "type": "number", "exclusiveMinimum": 0 },
+            "vehicleVisualMultiplier": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
         "regionPalettes": {
           "type": "object",
           "minProperties": 1,

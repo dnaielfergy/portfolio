@@ -11,9 +11,13 @@ import { resolveActivePlayerRadius } from "./physics/vehicleCollider";
 import { resolveQualityTier } from "./postfx/qualityTier";
 import { WorldCanvas } from "./scene/WorldCanvas";
 import { useWorldStore, WorldStoreProvider } from "./state/worldStore";
+import { CameraCalibrationProvider } from "./tuning/cameraCalibrationContext";
+import { NodePositionCalibrationProvider } from "./tuning/nodePositionCalibrationContext";
+import { CameraScaleCalibrationPanel } from "./ui/CameraScaleCalibrationPanel";
 import { CheckpointPanel } from "./ui/CheckpointPanel";
 import { FinalStatePanel } from "./ui/FinalStatePanel";
 import { HUD } from "./ui/HUD";
+import { NodePositionCalibrationPanel } from "./ui/NodePositionCalibrationPanel";
 import { StartOverlay } from "./ui/StartOverlay";
 import { TutorialOverlay } from "./ui/TutorialOverlay";
 import type { InitWorldResult } from "./bootstrap/initWorld";
@@ -289,14 +293,20 @@ function RuntimeApp({ world }: InitWorldResult): React.JSX.Element {
 
   return (
     <WorldStoreProvider store={store}>
-      <div className="app-shell">
-        <HUD />
-        <WorldCanvas />
-        <StartOverlay />
-        <TutorialOverlay />
-        <CheckpointPanel />
-        <FinalStatePanel />
-      </div>
+      <CameraCalibrationProvider worldConfig={world.config}>
+        <NodePositionCalibrationProvider worldConfig={world.config}>
+          <div className="app-shell">
+            <HUD />
+            <CameraScaleCalibrationPanel />
+            <NodePositionCalibrationPanel />
+            <WorldCanvas />
+            <StartOverlay />
+            <TutorialOverlay />
+            <CheckpointPanel />
+            <FinalStatePanel />
+          </div>
+        </NodePositionCalibrationProvider>
+      </CameraCalibrationProvider>
     </WorldStoreProvider>
   );
 }

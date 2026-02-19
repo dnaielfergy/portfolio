@@ -4,8 +4,10 @@ import * as THREE from "three";
 
 import { toSceneCoords } from "../data/loadWorldConfig";
 import { useWorldStoreContext } from "../state/worldStore";
+import { useCameraCalibration } from "../tuning/cameraCalibrationContext";
 
 export function CharacterRig(): React.JSX.Element {
+  const { activeVehicleVisualMultiplier } = useCameraCalibration();
   const {
     state: { player },
   } = useWorldStoreContext();
@@ -31,7 +33,10 @@ export function CharacterRig(): React.JSX.Element {
   });
 
   return (
-    <group ref={groupRef}>
+    <group
+      ref={groupRef}
+      scale={[activeVehicleVisualMultiplier, activeVehicleVisualMultiplier, activeVehicleVisualMultiplier]}
+    >
       <mesh castShadow position={[0, 0.95, 0]}>
         <sphereGeometry args={[0.34, 20, 20]} />
         <meshStandardMaterial color="#f2d0b8" roughness={1} metalness={0} />

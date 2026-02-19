@@ -59,6 +59,10 @@ export interface StyleConfig {
     settleFogOpacity: number;
     sfFogOpacity: number;
   };
+  scale?: {
+    worldVisualMultiplier: number;
+    vehicleVisualMultiplier: number;
+  };
   regionPalettes: Record<
     string,
     {

@@ -10,6 +10,7 @@ export interface CameraContext {
   checkpointNodePosition?: { x: number; y: number };
   transformProgress: number;
   transformMicroZoomPercent: number;
+  followLeadDistanceOverride?: number;
 }
 
 export interface CameraSnapshot {
@@ -108,7 +109,7 @@ export function createCameraController(config: {
     intro: "introStart",
     idleMap: "introEnd",
     tutorial: "checkpointDefault",
-    focusCharlotte: "checkpointDefault",
+    focusCharlotte: "focusCharlotte",
     exploring: "checkpointDefault",
     checkpointOpen: "checkpointDefault",
     transforming: "checkpointDefault",
@@ -153,7 +154,18 @@ export function createCameraController(config: {
 
     if (state === "exploring") {
       // Stable isometric framing: no direction-based lead/rotation while exploring.
-      target = buildPlayerAnchoredTarget(basePreset, context.playerPosition);
+      const override = context.followLeadDistanceOverride;
+      const followLeadDistance = override ?? profile.followLeadDistance;
+      const speed = Math.hypot(context.playerVelocity.x, context.playerVelocity.y);
+      const followPosition =
+        followLeadDistance > 0 && speed > 0.001
+          ? {
+              x: context.playerPosition.x + (context.playerVelocity.x / speed) * followLeadDistance,
+              y: context.playerPosition.y + (context.playerVelocity.y / speed) * followLeadDistance,
+            }
+          : context.playerPosition;
+
+      target = buildPlayerAnchoredTarget(basePreset, followPosition);
       return;
     }
 

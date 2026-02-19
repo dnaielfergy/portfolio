@@ -99,4 +99,79 @@ describe("loadWorldConfig", () => {
     expect(config.environment.props?.[0]?.id).toBe("charlotte_statue");
     expect(config.vehicles.stages.find((stage) => stage.id === "wreck")?.collider?.radius).toBe(0.3);
   });
+
+  it("defaults style.scale multipliers to 1 when omitted", async () => {
+    const withoutScale: WorldConfigSource = {
+      ...sourceConfig,
+      style: {
+        ...sourceConfig.style,
+        scale: undefined,
+      },
+      environment: {
+        manifestRef: "/manifest.json",
+      },
+    };
+
+    globalThis.fetch = vi.fn(async (input: RequestInfo | URL) => {
+      const path = String(input);
+      if (path === "/config.json") {
+        return new Response(JSON.stringify(withoutScale), { status: 200 });
+      }
+      if (path === "/manifest.json") {
+        return new Response(
+          JSON.stringify({
+            version: "1.0.0",
+            collision: {
+              enabled: true,
+              playerRadius: 1,
+              maxSlideIterations: 3,
+            },
+            kitRefs: ["/kit.json"],
+            regionRefs: ["/region.json"],
+          }),
+          { status: 200 },
+        );
+      }
+      if (path === "/kit.json") {
+        return new Response(
+          JSON.stringify({
+            id: "test_kit",
+            modules: [
+              {
+                id: "midrise",
+                size: { width: 2, depth: 3, height: 4 },
+                styleKey: "charlotte",
+                colliderByDefault: true,
+              },
+            ],
+          }),
+          { status: 200 },
+        );
+      }
+      if (path === "/region.json") {
+        return new Response(
+          JSON.stringify({
+            id: "charlotte",
+            buildings: [
+              {
+                id: "charlotte_block_1",
+                moduleId: "midrise",
+                position: { x: 1, y: 2 },
+                rotation: 30,
+              },
+            ],
+          }),
+          { status: 200 },
+        );
+      }
+
+      return new Response("not found", { status: 404 });
+    }) as typeof globalThis.fetch;
+
+    const config = await loadWorldConfig("/config.json");
+    expect(config.style.scale).toEqual({
+      worldVisualMultiplier: 1,
+      vehicleVisualMultiplier: 1,
+    });
+  });
 });
